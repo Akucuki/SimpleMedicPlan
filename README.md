@@ -1,2 +1,2 @@
 # SimpleMedicPlan
-Personal medic placenner proof-of-concept app
+Personal medic planner, proof-of-concept app
