@@ -1,4 +1,4 @@
-package com.example.simplemedicplan.features.auth
+package com.example.simplemedicplan.features.auth.initial
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
