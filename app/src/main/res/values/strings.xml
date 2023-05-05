@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">SimpleMedicPlan</string>
+    <string name="facebook_app_id">1492111781597459</string>
+    <string name="fb_login_protocol_scheme">fb1492111781597459</string>
+    <string name="facebook_client_token">ff23b749b13d0c5d1a82a55392500f2f</string>
     <!-- Errors -->
     <string name="error_failed_to_authorize">Failed to authorize!</string>
 

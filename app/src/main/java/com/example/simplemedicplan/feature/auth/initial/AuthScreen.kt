@@ -1,7 +1,7 @@
 package com.example.simplemedicplan.feature.auth.initial
 
-import android.app.Activity
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -40,10 +40,17 @@ import com.example.simplemedicplan.BuildConfig
 import com.example.simplemedicplan.R
 import com.example.simplemedicplan.application.theme.YellowColor
 import com.example.simplemedicplan.feature.common.PrimaryButton
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.FacebookSdk
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -77,7 +84,7 @@ fun AuthScreen(
             append(stringResource(R.string.login))
         }
     }
-    val activity = LocalContext.current as Activity
+    val activity = LocalContext.current as ComponentActivity
     val googleSignUpLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -93,6 +100,30 @@ fun AuthScreen(
             viewModel.onAuthFailure()
         }
     }
+    val fbCallbackManager by lazy { CallbackManager.Factory.create() }
+
+    fun registerFacebookCallback() {
+        LoginManager.getInstance().registerCallback(
+            fbCallbackManager,
+            object : FacebookCallback<LoginResult> {
+                override fun onCancel() {
+                    viewModel.onAuthFailure()
+                }
+
+                override fun onError(error: FacebookException) {
+                    viewModel.onAuthFailure()
+                }
+
+                override fun onSuccess(result: LoginResult) {
+                    val token = result.accessToken.token
+                    val credential = FacebookAuthProvider.getCredential(token)
+                    Firebase.auth.signInWithCredential(credential)
+                        .addOnSuccessListener { viewModel.onAuthSuccess() }
+                        .addOnFailureListener { viewModel.onAuthFailure() }
+                }
+            }
+        )
+    }
 
     fun authGoogle() {
         val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -103,6 +134,16 @@ fun AuthScreen(
         googleSignUpLauncher.launch(googleSignInClient.signInIntent)
     }
 
+    fun authFacebook() {
+        FacebookSdk.fullyInitialize()
+        registerFacebookCallback()
+        LoginManager.getInstance().logInWithReadPermissions(
+            activity,
+            fbCallbackManager,
+            listOf("email", "public_profile")
+        )
+    }
+
     LaunchedEffect(Unit) {
         events.collect { event ->
             when (event) {
@@ -111,6 +152,7 @@ fun AuthScreen(
                 }
 
                 is AuthEvents.AuthWithFacebook -> {
+                    authFacebook()
                 }
 
                 is AuthEvents.NavigateHome -> {
