@@ -20,4 +20,12 @@ class AuthViewModel @Inject constructor(
     fun onAuthWithFacebookClick() {
         events.trySend(AuthEvents.AuthWithFacebook)
     }
+
+    fun onAuthSuccess() {
+        events.trySend(AuthEvents.NavigateHome)
+    }
+
+    fun onAuthFailure() {
+        events.trySend(AuthEvents.ShowErrorToast)
+    }
 }

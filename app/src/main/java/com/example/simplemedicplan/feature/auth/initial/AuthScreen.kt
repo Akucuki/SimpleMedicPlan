@@ -1,6 +1,7 @@
 package com.example.simplemedicplan.feature.auth.initial
 
 import android.app.Activity
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -51,7 +52,10 @@ import kotlinx.coroutines.flow.receiveAsFlow
 private const val LOGIN_STRING_TAG = "login"
 
 @Composable
-fun AuthScreen(viewModel: AuthViewModel = hiltViewModel()) {
+fun AuthScreen(
+    viewModel: AuthViewModel = hiltViewModel(),
+    onNavigateHome: () -> Unit
+) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val events = remember(viewModel.events, lifecycleOwner) {
         viewModel.events.receiveAsFlow().flowWithLifecycle(
@@ -83,10 +87,10 @@ fun AuthScreen(viewModel: AuthViewModel = hiltViewModel()) {
             val token = account!!.idToken!!
             val credential = GoogleAuthProvider.getCredential(token, null)
             Firebase.auth.signInWithCredential(credential)
-                .addOnSuccessListener {  }
-                .addOnFailureListener {  }
+                .addOnSuccessListener { viewModel.onAuthSuccess() }
+                .addOnFailureListener { viewModel.onAuthFailure() }
         } catch (e: ApiException) {
-            e.printStackTrace()
+            viewModel.onAuthFailure()
         }
     }
 
@@ -98,7 +102,7 @@ fun AuthScreen(viewModel: AuthViewModel = hiltViewModel()) {
         val googleSignInClient = GoogleSignIn.getClient(activity, signInOptions)
         googleSignUpLauncher.launch(googleSignInClient.signInIntent)
     }
-    
+
     LaunchedEffect(Unit) {
         events.collect { event ->
             when (event) {
@@ -107,6 +111,18 @@ fun AuthScreen(viewModel: AuthViewModel = hiltViewModel()) {
                 }
 
                 is AuthEvents.AuthWithFacebook -> {
+                }
+
+                is AuthEvents.NavigateHome -> {
+                    onNavigateHome()
+                }
+
+                is AuthEvents.ShowErrorToast -> {
+                    Toast.makeText(
+                        activity,
+                        R.string.error_failed_to_authorize,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }

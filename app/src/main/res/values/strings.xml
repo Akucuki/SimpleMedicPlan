@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">SimpleMedicPlan</string>
+    <!-- Errors -->
+    <string name="error_failed_to_authorize">Failed to authorize!</string>
+
     <string name="simple">Simple</string>
     <string name="medic">Medic</string>
     <string name="plan">Plan</string>
