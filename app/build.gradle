@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -24,8 +25,13 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "WEB_CLIENT_ID", "\"675441869763-kdo01u32o87mh8sr1bgrfpav0i56iif5.apps.googleusercontent.com\""
+        }
+        debug {
+            buildConfigField "String", "WEB_CLIENT_ID", "\"675441869763-kdo01u32o87mh8sr1bgrfpav0i56iif5.apps.googleusercontent.com\""
         }
     }
     compileOptions {
@@ -58,6 +64,10 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
 
+    // Firebase
+    implementation 'com.google.firebase:firebase-auth-ktx:21.1.0'
+    implementation 'com.google.android.gms:play-services-auth:20.5.0'
+
     // Compose
     implementation 'androidx.activity:activity-compose:1.5.1'
     implementation platform('androidx.compose:compose-bom:2022.10.00')
@@ -67,6 +77,8 @@ dependencies {
     implementation 'androidx.compose.material3:material3'
     def nav_version = "2.5.3"
     implementation "androidx.navigation:navigation-compose:$nav_version"
+
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.31.1-alpha"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
