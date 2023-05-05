@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">SimpleMedicPlan</string>
+    <string name="simple">Simple</string>
+    <string name="medic">Medic</string>
+    <string name="plan">Plan</string>
+    <string name="register_with_email">Register with Email</string>
+    <string name="authorize_with_google">Authorize with Google</string>
+    <string name="authorize_with_facebook">Authorize with Facebook</string>
+    <string name="or">or</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="re_enter_password">Re-enter password</string>
 </resources>

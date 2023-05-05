@@ -1,4 +1,4 @@
-package com.example.simplemedicplan.ui.theme
+package com.example.simplemedicplan.application.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
@@ -17,10 +17,24 @@ val Typography = Typography(
     ),
     titleMedium = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 18.sp,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.sp
+    ),
+    labelMedium = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.5.sp
+    ),
+    bodySmall = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.5.sp
     ),
     /* Other default text styles to override
     titleLarge = TextStyle(

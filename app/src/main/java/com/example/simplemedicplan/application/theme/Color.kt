@@ -1,4 +1,4 @@
-package com.example.simplemedicplan.ui.theme
+package com.example.simplemedicplan.application.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.simplemedicplan.features.auth.initial.AuthScreen
+import com.example.simplemedicplan.feature.auth.initial.AuthScreen
 
 @Composable
 fun MedicPlanNavHost(
