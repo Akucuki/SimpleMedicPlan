@@ -40,6 +40,14 @@ class EmailRegisterViewModel @Inject constructor(
     }
 
     fun onRegisterClick() {
+        events.trySend(EmailRegisterEvents.Register(email.value.value, password.value.value))
+    }
+
+    fun onRegisterSuccess() {
         events.trySend(EmailRegisterEvents.NavigateToRegistrationNotice)
+    }
+
+    fun onRegisterFailure() {
+        events.trySend(EmailRegisterEvents.ShowErrorToast)
     }
 }
