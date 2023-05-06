@@ -1,5 +1,6 @@
 package com.example.simplemedicplan.feature.auth.email.register
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -27,7 +29,12 @@ import com.example.simplemedicplan.feature.common.PrimaryButton
 import com.example.simplemedicplan.feature.common.PrimaryTextField
 import com.example.simplemedicplan.feature.common.SMpAppBar
 import com.example.simplemedicplan.utils.APP_BAR_HEIGHT
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.withContext
 
 @Composable
 fun EmailAuthScreen(
@@ -35,6 +42,7 @@ fun EmailAuthScreen(
     onNavigateBack: () -> Unit,
     onNavigateToRegistrationNotice: () -> Unit
 ) {
+    val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val events = remember(viewModel.events, lifecycleOwner) {
         viewModel.events.receiveAsFlow().flowWithLifecycle(
@@ -46,12 +54,39 @@ fun EmailAuthScreen(
     val password by viewModel.password.collectAsStateWithLifecycle()
     val passwordConfirm by viewModel.passwordConfirm.collectAsStateWithLifecycle()
 
+    suspend fun register(email: String, password: String) {
+        // TODO handle collision
+        withContext(Dispatchers.IO) {
+            try {
+                val registerTask = Firebase.auth.createUserWithEmailAndPassword(email, password)
+                Tasks.await(registerTask)
+                when {
+                    registerTask.isSuccessful -> viewModel.onRegisterSuccess()
+                    else -> viewModel.onRegisterFailure()
+                }
+            } catch (e: Exception) {
+                viewModel.onRegisterFailure()
+            }
+        }
+    }
+
     LaunchedEffect(Unit) {
         events.collect { event ->
             when (event) {
                 is EmailRegisterEvents.NavigateBack -> onNavigateBack()
                 is EmailRegisterEvents.NavigateToRegistrationNotice -> {
                     onNavigateToRegistrationNotice()
+                }
+                is EmailRegisterEvents.Register -> {
+                    val (lastEmail, lastPassword) = event
+                    register(lastEmail, lastPassword)
+                }
+                is EmailRegisterEvents.ShowErrorToast -> {
+                    Toast.makeText(
+                        context,
+                        R.string.error_failed_to_authorize,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
