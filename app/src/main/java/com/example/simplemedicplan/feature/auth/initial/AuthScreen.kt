@@ -61,7 +61,9 @@ private const val LOGIN_STRING_TAG = "login"
 @Composable
 fun AuthScreen(
     viewModel: AuthViewModel = hiltViewModel(),
-    onNavigateHome: () -> Unit
+    onNavigateHome: () -> Unit,
+    onNavigateEmailRegister: () -> Unit,
+    onNavigateEmailLogin: () -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val events = remember(viewModel.events, lifecycleOwner) {
@@ -166,6 +168,14 @@ fun AuthScreen(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+
+                is AuthEvents.NavigateEmailLogin -> {
+                    onNavigateEmailLogin()
+                }
+
+                is AuthEvents.NavigateEmailRegister -> {
+                    onNavigateEmailRegister()
+                }
             }
         }
     }
@@ -191,7 +201,10 @@ fun AuthScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            PrimaryButton(text = stringResource(R.string.register_with_email), onClick = {})
+            PrimaryButton(
+                text = stringResource(R.string.register_with_email),
+                onClick = viewModel::onEmailRegisterClick
+            )
             ClickableText(
                 text = alreadyHaveAnAccountAnnotatedString,
                 style = MaterialTheme.typography.bodySmall,
@@ -201,7 +214,7 @@ fun AuthScreen(
                         start = offset,
                         end = offset
                     ).firstOrNull()?.let {
-                        // TODO go login
+                        viewModel.onEmailLoginClick()
                     }
                 }
             )
