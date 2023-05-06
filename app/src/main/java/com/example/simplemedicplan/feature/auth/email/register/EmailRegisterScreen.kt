@@ -6,9 +6,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
@@ -94,7 +97,7 @@ fun EmailAuthScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
         SMpAppBar(
-            title = "Login",
+            title = stringResource(R.string.register),
             leadingIcon = Icons.Filled.ArrowBack,
             onLeadingIconClick = viewModel::onBackArrowClick
         )
@@ -104,9 +107,12 @@ fun EmailAuthScreen(
                 .padding(top = APP_BAR_HEIGHT.dp)
                 .fillMaxSize()
                 .padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             PrimaryTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
                 value = email,
                 onValueChange = viewModel::onEmailValueChange,
                 labelText = stringResource(R.string.email)
@@ -125,7 +131,10 @@ fun EmailAuthScreen(
             )
             Spacer(modifier = Modifier.weight(1f))
             PrimaryButton(
-                modifier = Modifier.navigationBarsPadding(),
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .imePadding()
+                    .padding(bottom = 16.dp),
                 text = stringResource(R.string.register),
                 onClick = viewModel::onRegisterClick
             )
