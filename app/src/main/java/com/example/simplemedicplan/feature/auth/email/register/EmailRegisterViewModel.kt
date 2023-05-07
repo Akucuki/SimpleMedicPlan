@@ -7,8 +7,8 @@ import com.example.simplemedicplan.utils.InputValidator
 import kotlinx.coroutines.channels.Channel
 import javax.inject.Inject
 
-private const val EMAIL = "email"
-private const val PASSWORD = "password"
+const val EMAIL = "email"
+const val PASSWORD = "password"
 private const val PASSWORD_CONFIRM = "password_confirm"
 
 class EmailRegisterViewModel @Inject constructor(
