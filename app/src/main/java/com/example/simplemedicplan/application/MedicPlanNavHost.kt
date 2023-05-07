@@ -6,7 +6,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.simplemedicplan.feature.auth.email.register.EmailAuthScreen
+import com.example.simplemedicplan.feature.auth.email.login.EmailLoginScreen
+import com.example.simplemedicplan.feature.auth.email.register.EmailRegisterScreen
 import com.example.simplemedicplan.feature.auth.email.registerNotice.EmailRegistrationNoticeScreen
 import com.example.simplemedicplan.feature.auth.initial.AuthScreen
 import com.example.simplemedicplan.feature.home.HomeScreen
@@ -39,7 +40,7 @@ fun MedicPlanNavHost(
                         }
                     },
                     onNavigateEmailLogin = {
-                        navHostController.navigate(NavDirections.EMAIL_REGISTER.route)
+                        navHostController.navigate(NavDirections.EMAIL_LOGIN.route)
                     },
                     onNavigateEmailRegister = {
                         navHostController.navigate(NavDirections.EMAIL_REGISTER.route)
@@ -48,7 +49,7 @@ fun MedicPlanNavHost(
             }
         }
         composable(NavDirections.EMAIL_REGISTER.route) {
-            EmailAuthScreen(
+            EmailRegisterScreen(
                 onNavigateBack = navHostController::popBackStack,
                 onNavigateToRegistrationNotice = {
                     navHostController.navigate(NavDirections.REGISTRATION_NOTICE.route) {
@@ -59,6 +60,16 @@ fun MedicPlanNavHost(
         }
         composable(NavDirections.REGISTRATION_NOTICE.route) {
             EmailRegistrationNoticeScreen()
+        }
+        composable(NavDirections.EMAIL_LOGIN.route) {
+            EmailLoginScreen(
+                onNavigateBack = navHostController::popBackStack,
+                onNavigateToHome = {
+                    navHostController.navigate(NavDirections.HOME.route) {
+                        popUpTo(NavDirections.AUTH.route) { inclusive = true }
+                    }
+                }
+            )
         }
         composable(NavDirections.HOME.route) {
             HomeScreen()

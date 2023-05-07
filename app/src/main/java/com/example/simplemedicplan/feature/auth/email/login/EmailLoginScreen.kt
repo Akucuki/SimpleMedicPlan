@@ -1,4 +1,4 @@
-package com.example.simplemedicplan.feature.auth.email.register
+package com.example.simplemedicplan.feature.auth.email.login
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -40,10 +40,10 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.withContext
 
 @Composable
-fun EmailRegisterScreen(
-    viewModel: EmailRegisterViewModel = hiltViewModel(),
+fun EmailLoginScreen(
+    viewModel: EmailLoginViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
-    onNavigateToRegistrationNotice: () -> Unit
+    onNavigateToHome: () -> Unit,
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -55,20 +55,19 @@ fun EmailRegisterScreen(
     }
     val email by viewModel.email.collectAsStateWithLifecycle()
     val password by viewModel.password.collectAsStateWithLifecycle()
-    val passwordConfirm by viewModel.passwordConfirm.collectAsStateWithLifecycle()
 
-    suspend fun register(email: String, password: String) {
+    suspend fun login(email: String, password: String) {
         // TODO handle collision
         withContext(Dispatchers.IO) {
             try {
-                val registerTask = Firebase.auth.createUserWithEmailAndPassword(email, password)
-                Tasks.await(registerTask)
+                val loginTask = Firebase.auth.signInWithEmailAndPassword(email, password)
+                Tasks.await(loginTask)
                 when {
-                    registerTask.isSuccessful -> viewModel.onRegisterSuccess()
-                    else -> viewModel.onRegisterFailure()
+                    loginTask.isSuccessful -> viewModel.onLoginSuccess()
+                    else -> viewModel.onLoginFailure()
                 }
             } catch (e: Exception) {
-                viewModel.onRegisterFailure()
+                viewModel.onLoginFailure()
             }
         }
     }
@@ -76,15 +75,15 @@ fun EmailRegisterScreen(
     LaunchedEffect(Unit) {
         events.collect { event ->
             when (event) {
-                is EmailRegisterEvents.NavigateBack -> onNavigateBack()
-                is EmailRegisterEvents.NavigateToRegistrationNotice -> {
-                    onNavigateToRegistrationNotice()
+                is EmailLoginEvents.NavigateBack -> onNavigateBack()
+                is EmailLoginEvents.NavigateToHome -> {
+                    onNavigateToHome()
                 }
-                is EmailRegisterEvents.Register -> {
+                is EmailLoginEvents.Login -> {
                     val (lastEmail, lastPassword) = event
-                    register(lastEmail, lastPassword)
+                    login(lastEmail, lastPassword)
                 }
-                is EmailRegisterEvents.ShowErrorToast -> {
+                is EmailLoginEvents.ShowErrorToast -> {
                     Toast.makeText(
                         context,
                         R.string.error_failed_to_authorize,
@@ -97,7 +96,7 @@ fun EmailRegisterScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
         SMpAppBar(
-            title = stringResource(R.string.register),
+            title = stringResource(R.string.login),
             leadingIcon = Icons.Filled.ArrowBack,
             onLeadingIconClick = viewModel::onBackArrowClick
         )
@@ -123,20 +122,14 @@ fun EmailRegisterScreen(
                 onValueChange = viewModel::onPasswordValueChange,
                 labelText = stringResource(R.string.password)
             )
-            PrimaryTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = passwordConfirm,
-                onValueChange = viewModel::onPasswordConfirmValueChange,
-                labelText = stringResource(R.string.re_enter_password)
-            )
             Spacer(modifier = Modifier.weight(1f))
             PrimaryButton(
                 modifier = Modifier
                     .navigationBarsPadding()
                     .imePadding()
                     .padding(bottom = 16.dp),
-                text = stringResource(R.string.register),
-                onClick = viewModel::onRegisterClick
+                text = stringResource(R.string.login),
+                onClick = viewModel::onLoginClick
             )
         }
     }
