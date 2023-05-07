@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.simplemedicplan.model.TextFieldValueWrapper
 import com.example.simplemedicplan.utils.InputValidator
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import javax.inject.Inject
 
@@ -11,6 +12,7 @@ const val EMAIL = "email"
 const val PASSWORD = "password"
 private const val PASSWORD_CONFIRM = "password_confirm"
 
+@HiltViewModel
 class EmailRegisterViewModel @Inject constructor(
     private val handle: SavedStateHandle
 ) : ViewModel() {
