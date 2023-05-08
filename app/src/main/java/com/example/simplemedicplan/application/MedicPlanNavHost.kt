@@ -24,7 +24,7 @@ enum class NavDirections(val route: String) {
 fun MedicPlanNavHost(
     modifier: Modifier = Modifier,
     navHostController: NavHostController = rememberNavController(),
-    startDestination: String = "auth"
+    startDestination: String = NavDirections.AUTH.route
 ) {
     NavHost(
         modifier = modifier,
@@ -59,7 +59,13 @@ fun MedicPlanNavHost(
             )
         }
         composable(NavDirections.REGISTRATION_NOTICE.route) {
-            EmailRegistrationNoticeScreen()
+            EmailRegistrationNoticeScreen(
+                onNavigateToHome = {
+                    navHostController.navigate(NavDirections.HOME.route) {
+                        popUpTo(NavDirections.AUTH.route) { inclusive = true }
+                    }
+                }
+            )
         }
         composable(NavDirections.EMAIL_LOGIN.route) {
             EmailLoginScreen(
