@@ -10,75 +10,84 @@ import com.example.simplemedicplan.feature.auth.email.login.EmailLoginScreen
 import com.example.simplemedicplan.feature.auth.email.register.EmailRegisterScreen
 import com.example.simplemedicplan.feature.auth.email.registerNotice.EmailRegistrationNoticeScreen
 import com.example.simplemedicplan.feature.auth.initial.AuthScreen
-import com.example.simplemedicplan.feature.home.HomeScreen
+import com.example.simplemedicplan.feature.home.pills.PillsScreen
 
-enum class NavDirections(val route: String) {
+enum class NavDirection(val route: String) {
     AUTH("auth"),
     EMAIL_REGISTER("email_register"),
     EMAIL_LOGIN("email_login"),
     REGISTRATION_NOTICE("registration_notice"),
-    HOME("home")
+    HOME_SUBROUTE("home"),
+    PILLS("${HOME_SUBROUTE.route}/pills"),
+    MEDIC_CARD("${HOME_SUBROUTE.route}/medic_card"),
+    PROFILE("${HOME_SUBROUTE.route}/profile")
 }
 
 @Composable
 fun MedicPlanNavHost(
     modifier: Modifier = Modifier,
     navHostController: NavHostController = rememberNavController(),
-    startDestination: String = NavDirections.AUTH.route
+    startDestination: String = NavDirection.AUTH.route
 ) {
     NavHost(
         modifier = modifier,
         navController = navHostController,
         startDestination = startDestination
     ) {
-        with(NavDirections.AUTH) {
+        with(NavDirection.AUTH) {
             composable(route) {
                 AuthScreen(
                     onNavigateHome = {
-                        navHostController.navigate(NavDirections.HOME.route) {
+                        navHostController.navigate(NavDirection.PILLS.route) {
                             popUpTo(route) { inclusive = true }
                         }
                     },
                     onNavigateEmailLogin = {
-                        navHostController.navigate(NavDirections.EMAIL_LOGIN.route)
+                        navHostController.navigate(NavDirection.EMAIL_LOGIN.route)
                     },
                     onNavigateEmailRegister = {
-                        navHostController.navigate(NavDirections.EMAIL_REGISTER.route)
+                        navHostController.navigate(NavDirection.EMAIL_REGISTER.route)
                     }
                 )
             }
         }
-        composable(NavDirections.EMAIL_REGISTER.route) {
+        composable(NavDirection.EMAIL_REGISTER.route) {
             EmailRegisterScreen(
                 onNavigateBack = navHostController::popBackStack,
                 onNavigateToRegistrationNotice = {
-                    navHostController.navigate(NavDirections.REGISTRATION_NOTICE.route) {
-                        popUpTo(NavDirections.AUTH.route) { inclusive = true }
+                    navHostController.navigate(NavDirection.REGISTRATION_NOTICE.route) {
+                        popUpTo(NavDirection.AUTH.route) { inclusive = true }
                     }
                 }
             )
         }
-        composable(NavDirections.REGISTRATION_NOTICE.route) {
+        composable(NavDirection.REGISTRATION_NOTICE.route) {
             EmailRegistrationNoticeScreen(
                 onNavigateToHome = {
-                    navHostController.navigate(NavDirections.HOME.route) {
-                        popUpTo(NavDirections.AUTH.route) { inclusive = true }
+                    navHostController.navigate(NavDirection.PILLS.route) {
+                        popUpTo(NavDirection.AUTH.route) { inclusive = true }
                     }
                 }
             )
         }
-        composable(NavDirections.EMAIL_LOGIN.route) {
+        composable(NavDirection.EMAIL_LOGIN.route) {
             EmailLoginScreen(
                 onNavigateBack = navHostController::popBackStack,
                 onNavigateToHome = {
-                    navHostController.navigate(NavDirections.HOME.route) {
-                        popUpTo(NavDirections.AUTH.route) { inclusive = true }
+                    navHostController.navigate(NavDirection.PILLS.route) {
+                        popUpTo(NavDirection.AUTH.route) { inclusive = true }
                     }
                 }
             )
         }
-        composable(NavDirections.HOME.route) {
-            HomeScreen()
+        composable(NavDirection.PILLS.route) {
+            PillsScreen()
+        }
+        composable(NavDirection.MEDIC_CARD.route) {
+            PillsScreen()
+        }
+        composable(NavDirection.PROFILE.route) {
+            PillsScreen()
         }
     }
 }
