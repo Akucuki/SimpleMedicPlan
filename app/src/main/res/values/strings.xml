@@ -27,4 +27,7 @@
     <string name="password">Password</string>
     <string name="re_enter_password">Re-enter password</string>
     <string name="please_check_email_instructions">Please check the instructions we\'ve sent to your email</string>
+    <string name="medic_card">Medic card</string>
+    <string name="pills">Pills</string>
+    <string name="profile">Profile</string>
 </resources>
