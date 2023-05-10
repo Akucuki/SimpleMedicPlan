@@ -1,7 +1,6 @@
 package com.example.simplemedicplan.application
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -47,7 +46,6 @@ class MainActivity : ComponentActivity() {
                 navController.addOnDestinationChangedListener { _, destination, _ ->
                     isNavigationBarVisible =
                         destination.route?.startsWith(NavDirection.HOME_SUBROUTE.route) ?: false
-                    Log.d("vitalik", "isNavigationBarVisible: $isNavigationBarVisible")
                 }
 
                 onDispose {}

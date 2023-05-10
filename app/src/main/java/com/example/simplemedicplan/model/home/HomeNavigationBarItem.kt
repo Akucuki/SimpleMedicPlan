@@ -1,4 +1,4 @@
-package com.example.simplemedicplan.model
+package com.example.simplemedicplan.model.home
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

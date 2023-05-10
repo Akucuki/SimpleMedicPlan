@@ -81,13 +81,13 @@ fun MedicPlanNavHost(
             )
         }
         composable(NavDirection.PILLS.route) {
-            PillsScreen()
+            PillsScreen(onNavigateToAddPill = {})
         }
         composable(NavDirection.MEDIC_CARD.route) {
-            PillsScreen()
+            PillsScreen(onNavigateToAddPill = {})
         }
         composable(NavDirection.PROFILE.route) {
-            PillsScreen()
+            PillsScreen(onNavigateToAddPill = {})
         }
     }
 }
