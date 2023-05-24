@@ -18,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -30,7 +29,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 
 @Composable
 fun PillsScreen(
-    viewModel: PillsViewModelMock = hiltViewModel(),
+    viewModel: PillsViewModel = hiltViewModel(),
     onNavigateToAddPill: () -> Unit
 ) {
 
@@ -73,8 +72,9 @@ fun PillsScreen(
     }
 }
 
-@Preview
-@Composable
-private fun PillsScreenPreview() {
-    PillsScreen(viewModel = PillsViewModelMockImpl(), onNavigateToAddPill = {})
-}
+// TODO fix this to correctly work with Hilt
+//@Preview
+//@Composable
+//private fun PillsScreenPreview() {
+//    PillsScreen(viewModel = PillsViewModelMockImpl(), onNavigateToAddPill = {})
+//}

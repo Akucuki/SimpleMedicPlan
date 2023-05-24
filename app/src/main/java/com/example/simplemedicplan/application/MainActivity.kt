@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -15,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import com.example.simplemedicplan.application.theme.DarkBlueColor
@@ -36,6 +40,7 @@ class MainActivity : ComponentActivity() {
             val useDarkIcons = !isSystemInDarkTheme()
             val navController = rememberNavController()
             var isNavigationBarVisible by remember { mutableStateOf(false) }
+            val layoutDirection = LocalLayoutDirection.current
 
             DisposableEffect(systemUiController, useDarkIcons) {
                 systemUiController.setSystemBarsColor(
@@ -69,10 +74,16 @@ class MainActivity : ComponentActivity() {
                     },
                     containerColor = DarkBlueColor
                 ) {
+                    // Caution!
+                    val paddingValuesExceptTop = PaddingValues(
+                        start = it.calculateStartPadding(layoutDirection),
+                        end = it.calculateEndPadding(layoutDirection),
+                        bottom = it.calculateBottomPadding()
+                    )
                     MedicPlanNavHost(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(it),
+                            .padding(paddingValuesExceptTop),
                         startDestination = provideStartDestination(),
                         navHostController = navController
                     )
