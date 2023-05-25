@@ -1,9 +1,14 @@
 package com.example.simplemedicplan.feature.common
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -57,6 +62,85 @@ fun PrimaryTextField(
             Spacer(errorLineModifier)
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SecondaryTextField(
+    modifier: Modifier = Modifier,
+    value: TextFieldValueWrapper,
+    onValueChange: (String) -> Unit,
+    labelText: String,
+    singleLine: Boolean = true
+) {
+    val isError = value.errorId != null
+    Column(modifier = modifier, horizontalAlignment = Alignment.End) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                modifier = Modifier.weight(.5f),
+                text = labelText,
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (isError) LightRedColor else YellowColor
+            )
+            TextField(
+                modifier = Modifier.weight(.5f),
+                value = value.value,
+                onValueChange = onValueChange,
+                colors = textFieldColors(),
+                isError = isError,
+                textStyle = MaterialTheme.typography.bodyMedium,
+                singleLine = singleLine,
+            )
+        }
+        val errorLineModifier = Modifier.height(14.dp)
+        if (isError) {
+            Text(
+                modifier = errorLineModifier,
+                text = stringResource(value.errorId!!),
+                style = MaterialTheme.typography.bodySmall,
+                color = LightRedColor
+            )
+        } else {
+            Spacer(errorLineModifier)
+        }
+    }
+}
+
+@Composable
+fun PrimaryDropdownMenu(
+    modifier: Modifier = Modifier,
+    expanded: Boolean,
+    onDismissRequest: () -> Unit,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    DropdownMenu(
+        modifier = modifier,
+        expanded = expanded,
+        onDismissRequest = onDismissRequest,
+        content = content
+    )
+}
+
+@Composable
+fun PrimaryDropdownMenuItem(
+    modifier: Modifier = Modifier,
+    text: String,
+    onClick: () -> Unit
+) {
+    DropdownMenuItem(
+        modifier = modifier,
+        text = {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.White
+            )
+        },
+        onClick = onClick
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

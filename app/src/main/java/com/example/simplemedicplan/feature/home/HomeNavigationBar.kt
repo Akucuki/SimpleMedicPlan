@@ -21,7 +21,7 @@ import com.example.simplemedicplan.application.NavDirection
 import com.example.simplemedicplan.application.theme.DarkRedColor
 import com.example.simplemedicplan.application.theme.MudColor
 import com.example.simplemedicplan.application.theme.YellowColor
-import com.example.simplemedicplan.model.HomeNavigationBarItem
+import com.example.simplemedicplan.model.home.HomeNavigationBarItem
 
 @Composable
 fun HomeNavigationBar(

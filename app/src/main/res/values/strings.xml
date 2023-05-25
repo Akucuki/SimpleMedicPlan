@@ -30,4 +30,44 @@
     <string name="medic_card">Medic card</string>
     <string name="pills">Pills</string>
     <string name="profile">Profile</string>
+    <string name="name">Name</string>
+    <string name="form">Form</string>
+    <string name="dosage_type">Dosage type</string>
+    <string name="dosage">Dosage</string>
+    <string name="frequency">Frequency</string>
+    <string name="intake_time">Intake time</string>
+    <string name="course_duration">Course duration</string>
+    <string name="notes">Notes</string>
+    <string name="remind_me">Remind me</string>
+    <string name="time">Time</string>
+    <string name="save_changes_dialog_title">Unsaved Changes</string>
+    <string name="save_changes_dialog_text">Would you like to save your changes before leaving?</string>
+    <string name="save">Save</string>
+    <string name="discard_changes">Discard changes</string>
+    <!-- Medicine forms -->
+    <string name="tablets">tablets</string>
+    <string name="capsules">capsules</string>
+    <string name="syrup">syrup</string>
+    <string name="spray">spray</string>
+    <string name="ointment">ointment</string>
+    <string name="gel">gel</string>
+    <string name="cream">cream</string>
+    <string name="injection_solution">injection solution</string>
+    <string name="suppositories">suppositories</string>
+    <string name="powder">powder</string>
+    <string name="drops">drops</string>
+    <string name="patch">patch</string>
+    <!-- Medicine dosage types -->
+    <string name="milligrams">mg</string>
+    <string name="milliliters">ml</string>
+    <string name="tablets_">tablets</string>
+    <string name="capsules_">capsules</string>
+    <string name="drops_">drops</string>
+    <string name="puffs">puffs</string>
+    <string name="grams">g</string>
+    <string name="teaspoons">teaspoons</string>
+    <string name="tablespoons">tablespoons</string>
+    <string name="pieces">pieces</string>
+    <string name="till">till</string>
+    <string name="edit_medicine">Edit medicine</string>
 </resources>
