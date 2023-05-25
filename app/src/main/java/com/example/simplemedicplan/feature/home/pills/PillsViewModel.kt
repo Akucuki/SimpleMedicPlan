@@ -8,12 +8,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PillsViewModel @Inject constructor(
-    private val handle: SavedStateHandle
+    private val handle: SavedStateHandle,
 ) : ViewModel(), PillsViewModelMock {
 
     override val events = Channel<PillsEvents>(Channel.UNLIMITED)
 
     override fun onAddButtonClick() {
-
+        events.trySend(PillsEvents.NavigateToAddPill)
     }
 }

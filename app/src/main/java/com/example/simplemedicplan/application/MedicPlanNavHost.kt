@@ -11,6 +11,7 @@ import com.example.simplemedicplan.feature.auth.email.register.EmailRegisterScre
 import com.example.simplemedicplan.feature.auth.email.registerNotice.EmailRegistrationNoticeScreen
 import com.example.simplemedicplan.feature.auth.initial.AuthScreen
 import com.example.simplemedicplan.feature.home.pills.PillsScreen
+import com.example.simplemedicplan.feature.home.pills.edit.PillEditScreen
 
 enum class NavDirection(val route: String) {
     AUTH("auth"),
@@ -20,7 +21,8 @@ enum class NavDirection(val route: String) {
     HOME_SUBROUTE("home"),
     PILLS("${HOME_SUBROUTE.route}/pills"),
     MEDIC_CARD("${HOME_SUBROUTE.route}/medic_card"),
-    PROFILE("${HOME_SUBROUTE.route}/profile")
+    PROFILE("${HOME_SUBROUTE.route}/profile"),
+    PILLS_EDIT("${PILLS.route}/edit"),
 }
 
 @Composable
@@ -81,13 +83,20 @@ fun MedicPlanNavHost(
             )
         }
         composable(NavDirection.PILLS.route) {
-            PillsScreen(onNavigateToAddPill = {})
+            PillsScreen(
+                onNavigateToAddPill = {
+                    navHostController.navigate(NavDirection.PILLS_EDIT.route)
+                }
+            )
         }
         composable(NavDirection.MEDIC_CARD.route) {
             PillsScreen(onNavigateToAddPill = {})
         }
         composable(NavDirection.PROFILE.route) {
             PillsScreen(onNavigateToAddPill = {})
+        }
+        composable(NavDirection.PILLS_EDIT.route) {
+            PillEditScreen()
         }
     }
 }

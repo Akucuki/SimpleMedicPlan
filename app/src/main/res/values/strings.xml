@@ -30,6 +30,20 @@
     <string name="medic_card">Medic card</string>
     <string name="pills">Pills</string>
     <string name="profile">Profile</string>
+    <string name="name">Name</string>
+    <string name="form">Form</string>
+    <string name="dosage_type">Dosage type</string>
+    <string name="dosage">Dosage</string>
+    <string name="frequency">Frequency</string>
+    <string name="intake_time">Intake time</string>
+    <string name="course_duration">Course duration</string>
+    <string name="notes">Notes</string>
+    <string name="remind_me">Remind me</string>
+    <string name="time">Time</string>
+    <string name="save_changes_dialog_title">Unsaved Changes</string>
+    <string name="save_changes_dialog_text">Would you like to save your changes before leaving?</string>
+    <string name="save">Save</string>
+    <string name="discard_changes">Discard changes</string>
     <!-- Medicine forms -->
     <string name="tablets">tablets</string>
     <string name="capsules">capsules</string>
