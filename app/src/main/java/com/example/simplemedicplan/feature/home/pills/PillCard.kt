@@ -1,5 +1,6 @@
 package com.example.simplemedicplan.feature.home.pills
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.simplemedicplan.R
+import com.example.simplemedicplan.application.theme.YellowColor
 import com.example.simplemedicplan.model.home.PillDescriptionUI
 import com.example.simplemedicplan.model.home.PillDosageType
 
@@ -37,7 +39,8 @@ fun PillCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .wrapContentHeight(),
+            .wrapContentHeight()
+            .border(width = 2.dp, color = YellowColor),
         onClick = onClick,
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
@@ -67,10 +70,10 @@ fun PillCard(
                     text = stringResource(R.string.till),
                     style = MaterialTheme.typography.titleMedium
                 )
-                Text(
-                    text = pillDescriptionUI.endDate,
-                    style = MaterialTheme.typography.titleMedium
-                )
+//                Text(
+//                    text = pillDescriptionUI.endDate,
+//                    style = MaterialTheme.typography.titleMedium
+//                )
             }
         }
     }
@@ -90,7 +93,7 @@ private fun PillCardPreview() {
 //            formType = PillFormType.CAPSULES,
             dosageType = PillDosageType.CAPSULES,
             dosage = 1f,
-            endDate = "12 May 2023",
+//            endDate = "12 May 2023",
             notes = "For a sour aromatic sauce, add some olive oil and jasmine.",
             isExpanded = false
         )

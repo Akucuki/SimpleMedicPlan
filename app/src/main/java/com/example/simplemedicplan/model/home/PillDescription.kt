@@ -4,10 +4,6 @@ import android.os.Parcelable
 import androidx.annotation.StringRes
 import com.example.simplemedicplan.R
 import kotlinx.parcelize.Parcelize
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 
 //enum class PillFormType(@StringRes val labelId: Int) {
 //    TABLETS(labelId = R.string.tablets),
@@ -43,9 +39,9 @@ data class PillDescription(
 //    val formType: PillFormType,
     val dosageType: PillDosageType,
     val dosage: Float,
-    val endDate: Long, // TODO it should be LocalDataTime instead of a Long
+//    val endDate: Long, // TODO it should be LocalDataTime instead of a Long
     val notes: String = "",
-    val remaindersDates: List<Long> = emptyList(), // TODO it should be LocalDataTime instead of a Long
+    val remaindersDates: List<String> = emptyList(), // TODO it should be LocalDataTime instead of a Long
 ) : Parcelable {
 
     fun toUI() = PillDescriptionUI(
@@ -53,20 +49,14 @@ data class PillDescription(
 //        formType = formType,
         dosageType = dosageType,
         dosage = dosage,
-        endDate = dateFormatter.format(LocalDate.ofEpochDay(endDate)),
+//        endDate = dateFormatter.format(LocalDate.ofEpochDay(endDate)),
         notes = notes,
-        remaindersDates = remaindersDates.map {// TODO rewrite
-            LocalDateTime.ofEpochSecond(
-                it,
-                0,
-                ZoneOffset.UTC
-            )
-        },
+        remaindersDates = remaindersDates,
     )
 
-    companion object {
-        val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
-    }
+//    companion object {
+//        val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
+//    }
 }
 
 @Parcelize
@@ -75,9 +65,9 @@ data class PillDescriptionUI(
 //    val formType: PillFormType,
     val dosageType: PillDosageType,
     val dosage: Float,
-    val endDate: String,
+//    val endDate: String,
     val notes: String = "",
-    val remaindersDates: List<LocalDateTime> = emptyList(),
+    val remaindersDates: List<String> = emptyList(),
     val isExpanded: Boolean = false,
 ) : Parcelable
 
