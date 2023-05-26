@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.simplemedicplan.R
 import com.example.simplemedicplan.application.theme.YellowColor
+import com.example.simplemedicplan.feature.common.DatesListEditor
 import com.example.simplemedicplan.feature.common.DropdownTriggerButton
 import com.example.simplemedicplan.feature.common.PrimaryCheckbox
 import com.example.simplemedicplan.feature.common.PrimaryDropdownMenu
@@ -60,6 +61,8 @@ fun PillEditScreen(
 
     val isSaveChangesDialogVisible by viewModel.isSaveChangesDialogVisible.collectAsStateWithLifecycle()
 
+    val reminderDates by viewModel.reminderDates.collectAsStateWithLifecycle()
+
     BackHandler(onBack = viewModel::onBackClick)
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -75,6 +78,7 @@ fun PillEditScreen(
                 .fillMaxSize()
                 .padding(horizontal = 16.dp)
                 .verticalScroll(rememberScrollState())
+                .padding(vertical = 8.dp)
         ) {
             SecondaryTextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -82,52 +86,6 @@ fun PillEditScreen(
                 onValueChange = viewModel::onNameChange,
                 labelText = stringResource(R.string.name),
             )
-//            Row(
-//                verticalAlignment = Alignment.CenterVertically,
-//                horizontalArrangement = Arrangement.spacedBy(8.dp)
-//            ) {
-//                Text(
-//                    modifier = Modifier.weight(.5f),
-//                    text = stringResource(R.string.form),
-//                    style = MaterialTheme.typography.bodyMedium,
-//                    color = YellowColor
-//                )
-//                Box(modifier = Modifier.weight(.5f)) {
-//                    DropdownTriggerButton(
-//                        modifier = Modifier.fillMaxWidth(),
-//                        onClick = viewModel::onFormDropdownExpandClick
-//                    ) {
-//                        val iconId = if (isFormDropdownExpanded) {
-//                            R.drawable.ic_arrow_drop_up
-//                        } else {
-//                            R.drawable.ic_arrow_drop_down
-//                        }
-//                        Text(
-//                            modifier = Modifier.weight(1f),
-//                            text = stringResource(selectedFormType.labelId),
-//                            style = MaterialTheme.typography.bodyMedium,
-//                            color = Color.White
-//                        )
-//                        Icon(
-//                            painter = painterResource(iconId),
-//                            tint = YellowColor,
-//                            contentDescription = null
-//                        )
-//                    }
-//                    PrimaryDropdownMenu(
-//                        modifier = Modifier.heightIn(max = 200.dp),
-//                        expanded = isFormDropdownExpanded,
-//                        onDismissRequest = viewModel::onFormDropdownDismiss
-//                    ) {
-//                        PillFormType.values().forEach { form ->
-//                            PrimaryDropdownMenuItem(
-//                                text = stringResource(form.labelId),
-//                                onClick = { viewModel.onFormTypeSelect(form) }
-//                            )
-//                        }
-//                    }
-//                }
-//            }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -223,12 +181,16 @@ fun PillEditScreen(
                 )
             }
             if (isReminderEnabled) {
-                SecondaryTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = reminderTime,
-                    onValueChange = viewModel::onReminderTimeChange,
-                    labelText = stringResource(R.string.time),
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(.5f).align(Alignment.End),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    DatesListEditor(
+                        dates = reminderDates,
+                        onDatePicked = viewModel::onRemindDatePicked,
+                        onDateRemoveClick = viewModel::onRemindDateRemoved
+                    )
+                }
             }
         }
         if (isSaveChangesDialogVisible) {

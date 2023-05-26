@@ -6,6 +6,7 @@ import com.example.simplemedicplan.R
 import kotlinx.parcelize.Parcelize
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 //enum class PillFormType(@StringRes val labelId: Int) {
@@ -42,9 +43,9 @@ data class PillDescription(
 //    val formType: PillFormType,
     val dosageType: PillDosageType,
     val dosage: Float,
-    val endDate: LocalDate,
+    val endDate: Long, // TODO it should be LocalDataTime instead of a Long
     val notes: String = "",
-    val remaindersDates: List<LocalDateTime> = emptyList(),
+    val remaindersDates: List<Long> = emptyList(), // TODO it should be LocalDataTime instead of a Long
 ) : Parcelable {
 
     fun toUI() = PillDescriptionUI(
@@ -52,9 +53,15 @@ data class PillDescription(
 //        formType = formType,
         dosageType = dosageType,
         dosage = dosage,
-        endDate = dateFormatter.format(endDate),
+        endDate = dateFormatter.format(LocalDate.ofEpochDay(endDate)),
         notes = notes,
-        remaindersDates = remaindersDates,
+        remaindersDates = remaindersDates.map {// TODO rewrite
+            LocalDateTime.ofEpochSecond(
+                it,
+                0,
+                ZoneOffset.UTC
+            )
+        },
     )
 
     companion object {
