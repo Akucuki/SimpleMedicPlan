@@ -8,20 +8,20 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-enum class PillFormType(@StringRes val labelId: Int) {
-    TABLETS(labelId = R.string.tablets),
-    CAPSULES(labelId = R.string.capsules),
-    SYRUP(labelId = R.string.syrup),
-    SPRAY(labelId = R.string.spray),
-    OINTMENT(labelId = R.string.ointment),
-    GEL(labelId = R.string.gel),
-    CREAM(labelId = R.string.cream),
-    INJECTION_SOLUTION(labelId = R.string.injection_solution),
-    SUPPOSITORIES(labelId = R.string.suppositories),
-    POWDER(labelId = R.string.powder),
-    DROPS(labelId = R.string.drops),
-    PATCH(labelId = R.string.patch),
-}
+//enum class PillFormType(@StringRes val labelId: Int) {
+//    TABLETS(labelId = R.string.tablets),
+//    CAPSULES(labelId = R.string.capsules),
+//    SYRUP(labelId = R.string.syrup),
+//    SPRAY(labelId = R.string.spray),
+//    OINTMENT(labelId = R.string.ointment),
+//    GEL(labelId = R.string.gel),
+//    CREAM(labelId = R.string.cream),
+//    INJECTION_SOLUTION(labelId = R.string.injection_solution),
+//    SUPPOSITORIES(labelId = R.string.suppositories),
+//    POWDER(labelId = R.string.powder),
+//    DROPS(labelId = R.string.drops),
+//    PATCH(labelId = R.string.patch),
+//}
 
 enum class PillDosageType(@StringRes val labelId: Int) {
     MILLIGRAMS(labelId = R.string.milligrams),
@@ -39,7 +39,7 @@ enum class PillDosageType(@StringRes val labelId: Int) {
 @Parcelize
 data class PillDescription(
     val name: String,
-    val formType: PillFormType,
+//    val formType: PillFormType,
     val dosageType: PillDosageType,
     val dosage: Float,
     val endDate: LocalDate,
@@ -49,7 +49,7 @@ data class PillDescription(
 
     fun toUI() = PillDescriptionUI(
         name = name,
-        formType = formType,
+//        formType = formType,
         dosageType = dosageType,
         dosage = dosage,
         endDate = dateFormatter.format(endDate),
@@ -65,7 +65,7 @@ data class PillDescription(
 @Parcelize
 data class PillDescriptionUI(
     val name: String,
-    val formType: PillFormType,
+//    val formType: PillFormType,
     val dosageType: PillDosageType,
     val dosage: Float,
     val endDate: String,

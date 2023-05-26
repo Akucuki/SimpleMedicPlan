@@ -4,11 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.simplemedicplan.model.TextFieldValueWrapper
 import com.example.simplemedicplan.model.home.PillDosageType
-import com.example.simplemedicplan.model.home.PillFormType
 import javax.inject.Inject
 
 private const val NAME = "name"
-private const val FORM_TYPE = "form_type"
+//private const val FORM_TYPE = "form_type"
 private const val IS_FORM_DROPDOWN_EXPANDED = "is_form_dropdown_expanded"
 private const val DOSAGE_TYPE = "dosage_type"
 private const val IS_DOSAGE_DROPDOWN_EXPANDED = "is_dosage_dropdown_expanded"
@@ -35,7 +34,7 @@ class PillEditViewModel @Inject constructor(
     val isReminderEnabled = handle.getStateFlow(IS_REMINDER_ENABLED, false)
     val reminderTime = handle.getStateFlow(REMINDER_TIME, TextFieldValueWrapper())
     // Dropdowns values
-    val selectedFormType = handle.getStateFlow(FORM_TYPE, PillFormType.TABLETS)
+//    val selectedFormType = handle.getStateFlow(FORM_TYPE, PillFormType.TABLETS)
     val selectedDosageType = handle.getStateFlow(DOSAGE_TYPE, PillDosageType.MILLIGRAMS)
     // Visibility values
     val isFormDropdownExpanded = handle.getStateFlow(IS_FORM_DROPDOWN_EXPANDED, false)
@@ -46,10 +45,10 @@ class PillEditViewModel @Inject constructor(
         handle[NAME] = name.value.copy(value = input)
     }
 
-    fun onFormTypeSelect(formType: PillFormType) {
-        handle[FORM_TYPE] = formType
-        onFormDropdownDismiss()
-    }
+//    fun onFormTypeSelect(formType: PillFormType) {
+//        handle[FORM_TYPE] = formType
+//        onFormDropdownDismiss()
+//    }
 
     fun onFormDropdownExpandClick() {
         handle[IS_FORM_DROPDOWN_EXPANDED] = !isFormDropdownExpanded.value
@@ -112,6 +111,10 @@ class PillEditViewModel @Inject constructor(
     fun onSaveChangesDialogDiscardClick() {
         handle[IS_SAVE_CHANGES_DIALOG_VISIBLE] = false
         // TODO navigate back
+    }
+
+    fun onSaveClick() {
+
     }
 
     fun onSaveChangesDialogDismiss() {

@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import com.example.simplemedicplan.R
 import com.example.simplemedicplan.model.home.PillDescriptionUI
 import com.example.simplemedicplan.model.home.PillDosageType
-import com.example.simplemedicplan.model.home.PillFormType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -88,7 +87,7 @@ private fun PillCardPreview() {
     PillCard(
         pillDescriptionUI = PillDescriptionUI(
             name = "Lily Noble",
-            formType = PillFormType.CAPSULES,
+//            formType = PillFormType.CAPSULES,
             dosageType = PillDosageType.CAPSULES,
             dosage = 1f,
             endDate = "12 May 2023",

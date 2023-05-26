@@ -37,18 +37,16 @@ import com.example.simplemedicplan.feature.common.SMpAppBar
 import com.example.simplemedicplan.feature.common.SaveChangesDialog
 import com.example.simplemedicplan.feature.common.SecondaryTextField
 import com.example.simplemedicplan.model.home.PillDosageType
-import com.example.simplemedicplan.model.home.PillFormType
 import com.example.simplemedicplan.utils.APP_BAR_HEIGHT
 
 @Composable
 fun PillEditScreen(
     viewModel: PillEditViewModel = hiltViewModel(),
-    onSaveClick: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
 ) {
 
     val name by viewModel.name.collectAsStateWithLifecycle()
-    val selectedFormType by viewModel.selectedFormType.collectAsStateWithLifecycle()
+//    val selectedFormType by viewModel.selectedFormType.collectAsStateWithLifecycle()
     val isFormDropdownExpanded by viewModel.isFormDropdownExpanded.collectAsStateWithLifecycle()
     val selectedDosageType by viewModel.selectedDosageType.collectAsStateWithLifecycle()
     val isDosageDropdownExpanded by viewModel.isDosageDropdownExpanded.collectAsStateWithLifecycle()
@@ -68,7 +66,7 @@ fun PillEditScreen(
         SMpAppBar(
             title = stringResource(R.string.edit_medicine),
             trailingIcon = ImageVector.vectorResource(id = R.drawable.ic_save),
-            onTrailingIconClick = onSaveClick,
+            onTrailingIconClick = viewModel::onSaveClick,
         )
         Column(
             modifier = Modifier
@@ -84,58 +82,52 @@ fun PillEditScreen(
                 onValueChange = viewModel::onNameChange,
                 labelText = stringResource(R.string.name),
             )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text(
-                    modifier = Modifier.weight(.5f),
-                    text = stringResource(R.string.form),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = YellowColor
-                )
-                Box(modifier = Modifier.weight(.5f)) {
-                    DropdownTriggerButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = viewModel::onFormDropdownExpandClick
-                    ) {
-                        val iconId = if (isFormDropdownExpanded) {
-                            R.drawable.ic_arrow_drop_up
-                        } else {
-                            R.drawable.ic_arrow_drop_down
-                        }
-                        Text(
-                            modifier = Modifier.weight(1f),
-                            text = stringResource(selectedFormType.labelId),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color.White
-                        )
-                        Icon(
-                            painter = painterResource(iconId),
-                            tint = YellowColor,
-                            contentDescription = null
-                        )
-                    }
-                    PrimaryDropdownMenu(
-                        modifier = Modifier.heightIn(max = 200.dp),
-                        expanded = isFormDropdownExpanded,
-                        onDismissRequest = viewModel::onFormDropdownDismiss
-                    ) {
-                        PillFormType.values().forEach { form ->
-                            PrimaryDropdownMenuItem(
-                                text = stringResource(form.labelId),
-                                onClick = { viewModel.onFormTypeSelect(form) }
-                            )
-                        }
-                    }
-                }
-            }
-            SecondaryTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = dosage,
-                onValueChange = viewModel::onDosageChange,
-                labelText = stringResource(R.string.frequency),
-            )
+//            Row(
+//                verticalAlignment = Alignment.CenterVertically,
+//                horizontalArrangement = Arrangement.spacedBy(8.dp)
+//            ) {
+//                Text(
+//                    modifier = Modifier.weight(.5f),
+//                    text = stringResource(R.string.form),
+//                    style = MaterialTheme.typography.bodyMedium,
+//                    color = YellowColor
+//                )
+//                Box(modifier = Modifier.weight(.5f)) {
+//                    DropdownTriggerButton(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        onClick = viewModel::onFormDropdownExpandClick
+//                    ) {
+//                        val iconId = if (isFormDropdownExpanded) {
+//                            R.drawable.ic_arrow_drop_up
+//                        } else {
+//                            R.drawable.ic_arrow_drop_down
+//                        }
+//                        Text(
+//                            modifier = Modifier.weight(1f),
+//                            text = stringResource(selectedFormType.labelId),
+//                            style = MaterialTheme.typography.bodyMedium,
+//                            color = Color.White
+//                        )
+//                        Icon(
+//                            painter = painterResource(iconId),
+//                            tint = YellowColor,
+//                            contentDescription = null
+//                        )
+//                    }
+//                    PrimaryDropdownMenu(
+//                        modifier = Modifier.heightIn(max = 200.dp),
+//                        expanded = isFormDropdownExpanded,
+//                        onDismissRequest = viewModel::onFormDropdownDismiss
+//                    ) {
+//                        PillFormType.values().forEach { form ->
+//                            PrimaryDropdownMenuItem(
+//                                text = stringResource(form.labelId),
+//                                onClick = { viewModel.onFormTypeSelect(form) }
+//                            )
+//                        }
+//                    }
+//                }
+//            }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -186,6 +178,18 @@ fun PillEditScreen(
             }
             SecondaryTextField(
                 modifier = Modifier.fillMaxWidth(),
+                value = dosage,
+                onValueChange = viewModel::onDosageChange,
+                labelText = stringResource(R.string.dosage),
+            )
+            SecondaryTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = frequency,
+                onValueChange = viewModel::onFrequencyChange,
+                labelText = stringResource(R.string.frequency),
+            )
+            SecondaryTextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = intakeTime,
                 onValueChange = viewModel::onIntakeTimeChange,
                 labelText = stringResource(R.string.intake_time),
@@ -196,8 +200,14 @@ fun PillEditScreen(
                 onValueChange = viewModel::onCourseDurationChange,
                 labelText = stringResource(R.string.course_duration),
             )
+            SecondaryTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = notes,
+                onValueChange = viewModel::onNotesChange,
+                labelText = stringResource(R.string.notes),
+                singleLine = false
+            )
             Row(
-//                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -220,18 +230,11 @@ fun PillEditScreen(
                     labelText = stringResource(R.string.time),
                 )
             }
-            SecondaryTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = notes,
-                onValueChange = viewModel::onNotesChange,
-                labelText = stringResource(R.string.notes),
-                singleLine = false
-            )
         }
         if (isSaveChangesDialogVisible) {
             SaveChangesDialog(
                 onDismissRequest = viewModel::onSaveChangesDialogDismiss,
-                onSaveClik = viewModel::onSaveChangesDialogConfirmClick,
+                onSaveClick = viewModel::onSaveChangesDialogConfirmClick,
                 onDiscardChangesClick = viewModel::onSaveChangesDialogDiscardClick
             )
         }

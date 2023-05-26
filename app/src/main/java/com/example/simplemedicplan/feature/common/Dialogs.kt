@@ -13,14 +13,14 @@ import com.example.simplemedicplan.application.theme.YellowColor
 fun SaveChangesDialog(
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
-    onSaveClik: () -> Unit,
+    onSaveClick: () -> Unit,
     onDiscardChangesClick: () -> Unit
 ) {
     AlertDialog(
         modifier = modifier,
         onDismissRequest = onDismissRequest,
         confirmButton = {
-            SecondaryButton(text = stringResource(R.string.save), onClick = onSaveClik)
+            SecondaryButton(text = stringResource(R.string.save), onClick = onSaveClick)
         },
         dismissButton = {
             PrimaryButton(
