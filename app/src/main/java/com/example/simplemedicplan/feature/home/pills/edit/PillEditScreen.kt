@@ -52,6 +52,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 fun PillEditScreen(
     viewModel: PillEditViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
+    pillUuid: String?
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val events = remember(viewModel.events, lifecycleOwner) {
@@ -61,17 +62,11 @@ fun PillEditScreen(
         )
     }
     val name by viewModel.name.collectAsStateWithLifecycle()
-//    val selectedFormType by viewModel.selectedFormType.collectAsStateWithLifecycle()
-//    val isFormDropdownExpanded by viewModel.isFormDropdownExpanded.collectAsStateWithLifecycle()
     val selectedDosageType by viewModel.selectedDosageType.collectAsStateWithLifecycle()
     val isDosageDropdownExpanded by viewModel.isDosageDropdownExpanded.collectAsStateWithLifecycle()
     val dosage by viewModel.dosage.collectAsStateWithLifecycle()
-//    val frequency by viewModel.frequency.collectAsStateWithLifecycle()
-//    val intakeTime by viewModel.intakeTime.collectAsStateWithLifecycle()
-//    val courseDuration by viewModel.courseDuration.collectAsStateWithLifecycle()
     val notes by viewModel.notes.collectAsStateWithLifecycle()
     val isReminderEnabled by viewModel.isReminderEnabled.collectAsStateWithLifecycle()
-//    val reminderTime by viewModel.reminderTime.collectAsStateWithLifecycle()
 
     val isSaveChangesDialogVisible by viewModel.isSaveChangesDialogVisible.collectAsStateWithLifecycle()
 
@@ -85,6 +80,10 @@ fun PillEditScreen(
                 is PillEditEvents.NavigateBack -> onNavigateBack()
             }
         }
+    }
+
+    LaunchedEffect(Unit) {
+        pillUuid?.let { viewModel.onExistingPillUuidObtained(it) }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -164,24 +163,6 @@ fun PillEditScreen(
                 labelText = stringResource(R.string.dosage),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
-//            SecondaryTextField(
-//                modifier = Modifier.fillMaxWidth(),
-//                value = frequency,
-//                onValueChange = viewModel::onFrequencyChange,
-//                labelText = stringResource(R.string.frequency),
-//            )
-//            SecondaryTextField(
-//                modifier = Modifier.fillMaxWidth(),
-//                value = intakeTime,
-//                onValueChange = viewModel::onIntakeTimeChange,
-//                labelText = stringResource(R.string.intake_time),
-//            )
-//            SecondaryTextField(
-//                modifier = Modifier.fillMaxWidth(),
-//                value = courseDuration,
-//                onValueChange = viewModel::onCourseDurationChange,
-//                labelText = stringResource(R.string.course_duration),
-//            )
             SecondaryTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = notes,
@@ -207,7 +188,9 @@ fun PillEditScreen(
             }
             if (isReminderEnabled) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(.5f).align(Alignment.End),
+                    modifier = Modifier
+                        .fillMaxWidth(.5f)
+                        .align(Alignment.End),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     DatesListEditor(
