@@ -35,13 +35,13 @@ enum class PillDosageType(@StringRes val labelId: Int) {
 
 @Parcelize
 data class PillDescription(
-    val name: String,
+    val name: String = "",
 //    val formType: PillFormType,
-    val dosageType: PillDosageType,
-    val dosage: Float,
+    val dosageType: PillDosageType = PillDosageType.MILLIGRAMS,
+    val dosage: Float = .0f,
 //    val endDate: Long, // TODO it should be LocalDataTime instead of a Long
     val notes: String = "",
-    val remaindersDates: List<String> = emptyList(), // TODO it should be LocalDataTime instead of a Long
+    val remaindersDates: List<String> = emptyList()
 ) : Parcelable {
 
     fun toUI() = PillDescriptionUI(

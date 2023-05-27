@@ -12,8 +12,10 @@ import com.example.simplemedicplan.utils.FIREBASE_DATABASE_USERS
 import com.example.simplemedicplan.utils.decodeToLocalDateTimeCollection
 import com.example.simplemedicplan.utils.encodeToStringsCollection
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -28,24 +30,30 @@ private const val NAME = "name"
 private const val DOSAGE_TYPE = "dosage_type"
 private const val IS_DOSAGE_DROPDOWN_EXPANDED = "is_dosage_dropdown_expanded"
 private const val DOSAGE = "dosage"
+
 //private const val FREQUENCY = "frequency"
 //private const val INTAKE_TIME = "intake_time"
 //private const val COURSE_DURATION = "course_duration"
 private const val NOTES = "notes"
 private const val IS_REMINDER_ENABLED = "reminder_enabled"
+
 //private const val REMINDER_TIME = "reminder_time"
 private const val IS_SAVE_CHANGES_DIALOG_VISIBLE = "is_save_changes_dialog_visible"
 private const val REMINDER_DATES = "reminder_dates"
 
+@HiltViewModel
 class PillEditViewModel @Inject constructor(
     private val handle: SavedStateHandle,
+    databaseReference: DatabaseReference
 ) : ViewModel() {
 
     val events = Channel<PillEditEvents>(Channel.UNLIMITED)
+
     // Fields values
     val name = handle.getStateFlow(NAME, TextFieldValueWrapper())
-    val dosage = handle.getStateFlow(DOSAGE, TextFieldValueWrapper())
-//    val frequency = handle.getStateFlow(FREQUENCY, TextFieldValueWrapper())
+    val dosage = handle.getStateFlow(DOSAGE, TextFieldValueWrapper(value = "1.0"))
+
+    //    val frequency = handle.getStateFlow(FREQUENCY, TextFieldValueWrapper())
 //    val intakeTime = handle.getStateFlow(INTAKE_TIME, TextFieldValueWrapper())
 //    val courseDuration = handle.getStateFlow(COURSE_DURATION, TextFieldValueWrapper())
     val notes = handle.getStateFlow(NOTES, TextFieldValueWrapper())
@@ -62,15 +70,12 @@ class PillEditViewModel @Inject constructor(
     val isSaveChangesDialogVisible = handle.getStateFlow(IS_SAVE_CHANGES_DIALOG_VISIBLE, false)
 
     // Dates management
-    val reminderDates = handle.getStateFlow(REMINDER_DATES, setOf<String>()).map { stringEncodedDates ->
-        stringEncodedDates.decodeToLocalDateTimeCollection().toSet()
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptySet())
+    val reminderDates =
+        handle.getStateFlow(REMINDER_DATES, setOf<String>()).map { stringEncodedDates ->
+            stringEncodedDates.decodeToLocalDateTimeCollection().toSet()
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptySet())
 
-    private val databaseReference =
-        Firebase.database(FIREBASE_DATABASE_URL).getReference(FIREBASE_DATABASE_USERS)
-    private val userId = Firebase.auth.currentUser?.uid!!
     private val pillsDatabaseNodeReference = databaseReference
-        .child(userId)
         .child(FIREBASE_DATABASE_PILLS_DESCRIPTION)
 
     fun onNameChange(input: String) {
@@ -146,16 +151,18 @@ class PillEditViewModel @Inject constructor(
     }
 
     fun onSaveClick() {
-        pillsDatabaseNodeReference.setValue(
-            PillDescription(
-                name = name.value.value,
-                dosageType = selectedDosageType.value,
-                dosage = dosage.value.value.toFloat(),
-                notes = notes.value.value,
+        pillsDatabaseNodeReference
+            .child(name.value.value)
+            .setValue(
+                PillDescription(
+                    name = name.value.value,
+                    dosageType = selectedDosageType.value,
+                    dosage = dosage.value.value.toFloat(),
+                    notes = notes.value.value,
 //                endDate = LocalDate.now().toEpochDay(),
-                remaindersDates = emptyList(),
+                    remaindersDates = emptyList(),
+                )
             )
-        )
         events.trySend(PillEditEvents.NavigateBack)
     }
 

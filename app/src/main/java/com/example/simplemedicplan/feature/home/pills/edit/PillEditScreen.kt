@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +28,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -49,7 +51,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 @Composable
 fun PillEditScreen(
     viewModel: PillEditViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit = {},
+    onNavigateBack: () -> Unit,
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val events = remember(viewModel.events, lifecycleOwner) {
@@ -105,6 +107,7 @@ fun PillEditScreen(
                 value = name,
                 onValueChange = viewModel::onNameChange,
                 labelText = stringResource(R.string.name),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -159,6 +162,7 @@ fun PillEditScreen(
                 value = dosage,
                 onValueChange = viewModel::onDosageChange,
                 labelText = stringResource(R.string.dosage),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 //            SecondaryTextField(
 //                modifier = Modifier.fillMaxWidth(),
@@ -183,7 +187,8 @@ fun PillEditScreen(
                 value = notes,
                 onValueChange = viewModel::onNotesChange,
                 labelText = stringResource(R.string.notes),
-                singleLine = false
+                singleLine = false,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,

@@ -90,13 +90,15 @@ fun MedicPlanNavHost(
             )
         }
         composable(NavDirection.MEDIC_CARD.route) {
-            PillsScreen(onNavigateToAddPill = {})
+//            PillsScreen(onNavigateToAddPill = {})
         }
         composable(NavDirection.PROFILE.route) {
-            PillsScreen(onNavigateToAddPill = {})
+//            PillsScreen(onNavigateToAddPill = {})
         }
         composable(NavDirection.PILLS_EDIT.route) {
-            PillEditScreen()
+            PillEditScreen(
+                onNavigateBack = navHostController::popBackStack
+            )
         }
     }
 }
