@@ -40,7 +40,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 @Composable
 fun PillsScreen(
     viewModel: PillsViewModel = hiltViewModel(),
-    onNavigateToAddPill: () -> Unit
+    onNavigateToEditPill: (String?) -> Unit,
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val events = remember(viewModel.events, lifecycleOwner) {
@@ -57,7 +57,7 @@ fun PillsScreen(
     LaunchedEffect(Unit) {
         events.collect { event ->
             when (event) {
-                is PillsEvents.NavigateToAddPill -> onNavigateToAddPill()
+                is PillsEvents.NavigateToEditPill -> onNavigateToEditPill(event.pillDescriptionUuid)
             }
         }
     }
@@ -80,7 +80,8 @@ fun PillsScreen(
                     modifier = Modifier.padding(bottom = 4.dp),
                     pillDescriptionUI = pillDescription,
                     onClick = { viewModel.onPillCardClick(pillDescription) },
-                    onRemoveClick = { viewModel.onPillCardRemoveClick(pillDescription) }
+                    onRemoveClick = { viewModel.onPillCardRemoveClick(pillDescription) },
+                    onEditClick = { viewModel.onPillCardEditClick(pillDescription.uuid) }
                 )
             }
         }

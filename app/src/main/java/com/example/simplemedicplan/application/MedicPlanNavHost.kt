@@ -6,10 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.simplemedicplan.feature.auth.email.login.EmailLoginScreen
 import com.example.simplemedicplan.feature.auth.email.register.EmailRegisterScreen
 import com.example.simplemedicplan.feature.auth.email.registerNotice.EmailRegistrationNoticeScreen
@@ -103,8 +105,13 @@ fun MedicPlanNavHost(
                 )
             }
             PillsScreen(
-                onNavigateToAddPill = {
-                    navHostController.navigate(NavDirection.PILLS_EDIT.route)
+                onNavigateToEditPill = { pillId ->
+                    val route = if (pillId != null) {
+                        "${NavDirection.PILLS_EDIT.route}?pillId=$pillId"
+                    } else {
+                        NavDirection.PILLS_EDIT.route
+                    }
+                    navHostController.navigate(route)
                 }
             )
         }
@@ -139,9 +146,20 @@ fun MedicPlanNavHost(
                 }
             )
         }
-        composable(NavDirection.PILLS_EDIT.route) {
+        composable(
+            "${NavDirection.PILLS_EDIT.route}?pillId={pillId}",
+            arguments = listOf(
+                navArgument("pillId") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
+        ) {
+            val pillId = it.arguments?.getString("pillId")
             PillEditScreen(
-                onNavigateBack = navHostController::popBackStack
+                onNavigateBack = navHostController::popBackStack,
+                pillUuid = pillId
             )
         }
     }

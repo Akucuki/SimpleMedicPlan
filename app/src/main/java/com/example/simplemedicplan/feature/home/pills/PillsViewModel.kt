@@ -56,6 +56,10 @@ class PillsViewModel @Inject constructor(
         }
     }
 
+    fun onPillCardEditClick(uuid: String) {
+        events.trySend(PillsEvents.NavigateToEditPill(uuid))
+    }
+
     fun onPillCardRemoveClick(pillDescription: PillDescriptionUI) {
         pillsDatabaseNodeReference.child(pillDescription.uuid).removeValue()
             .addOnSuccessListener {
@@ -70,6 +74,6 @@ class PillsViewModel @Inject constructor(
     }
 
     override fun onAddButtonClick() {
-        events.trySend(PillsEvents.NavigateToAddPill)
+        events.trySend(PillsEvents.NavigateToEditPill())
     }
 }

@@ -20,21 +20,14 @@ import java.time.LocalDateTime
 import java.util.UUID
 import javax.inject.Inject
 
-private const val NAME = "name"
+private const val EXISTING_PILL_UUID = "existing_pill_uuid"
 
-//private const val FORM_TYPE = "form_type"
-//private const val IS_FORM_DROPDOWN_EXPANDED = "is_form_dropdown_expanded"
+private const val NAME = "name"
 private const val DOSAGE_TYPE = "dosage_type"
 private const val IS_DOSAGE_DROPDOWN_EXPANDED = "is_dosage_dropdown_expanded"
 private const val DOSAGE = "dosage"
-
-//private const val FREQUENCY = "frequency"
-//private const val INTAKE_TIME = "intake_time"
-//private const val COURSE_DURATION = "course_duration"
 private const val NOTES = "notes"
 private const val IS_REMINDER_ENABLED = "reminder_enabled"
-
-//private const val REMINDER_TIME = "reminder_time"
 private const val IS_SAVE_CHANGES_DIALOG_VISIBLE = "is_save_changes_dialog_visible"
 private const val REMINDER_DATES = "reminder_dates"
 
@@ -45,6 +38,8 @@ class PillEditViewModel @Inject constructor(
 ) : ViewModel() {
 
     val events = Channel<PillEditEvents>(Channel.UNLIMITED)
+
+    private val existingPillUuid = handle.getStateFlow<String?>(EXISTING_PILL_UUID, null)
 
     // Fields values
     val name = handle.getStateFlow(NAME, TextFieldValueWrapper())
@@ -67,6 +62,20 @@ class PillEditViewModel @Inject constructor(
 
     private val pillsDatabaseNodeReference = databaseReference
         .child(FIREBASE_DATABASE_PILLS_DESCRIPTION)
+
+    fun onExistingPillUuidObtained(uuid: String) {
+        handle[EXISTING_PILL_UUID] = uuid
+        pillsDatabaseNodeReference.child(uuid).get().addOnSuccessListener { dataSnapshot ->
+            val pillDescription = dataSnapshot.getValue(PillDescription::class.java)
+                ?: return@addOnSuccessListener
+            handle[NAME] = name.value.copy(value = pillDescription.name)
+            handle[DOSAGE_TYPE] = pillDescription.dosageType
+            handle[DOSAGE] = dosage.value.copy(value = pillDescription.dosage.toString())
+            handle[NOTES] = notes.value.copy(value = pillDescription.notes)
+            handle[IS_REMINDER_ENABLED] = pillDescription.remaindersDates.isNotEmpty()
+            handle[REMINDER_DATES] = pillDescription.remaindersDates.toSet()
+        }
+    }
 
     fun onNameChange(input: String) {
         handle[NAME] = name.value.copy(value = input, errorId = null)
@@ -115,7 +124,7 @@ class PillEditViewModel @Inject constructor(
         val nameErrorId = InputValidator.getMedicineNameErrorIdOrNull(name.value.value)
         handle[NAME] = name.value.copy(errorId = nameErrorId)
         if (nameErrorId != null) return
-        val uuid = UUID.randomUUID().toString()
+        val uuid = existingPillUuid.value ?: UUID.randomUUID().toString()
         pillsDatabaseNodeReference
             .child(uuid)
             .setValue(
@@ -125,7 +134,7 @@ class PillEditViewModel @Inject constructor(
                     dosageType = selectedDosageType.value,
                     dosage = dosage.value.value.toFloat(),
                     notes = notes.value.value,
-                    remaindersDates = emptyList(),
+                    remaindersDates = reminderDates.value.encodeToStringsCollection().toList(),
                 )
             )
         events.trySend(PillEditEvents.NavigateBack)
