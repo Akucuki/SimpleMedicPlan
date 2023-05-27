@@ -7,15 +7,10 @@ import com.example.simplemedicplan.model.TextFieldValueWrapper
 import com.example.simplemedicplan.model.home.PillDescription
 import com.example.simplemedicplan.model.home.PillDosageType
 import com.example.simplemedicplan.utils.FIREBASE_DATABASE_PILLS_DESCRIPTION
-import com.example.simplemedicplan.utils.FIREBASE_DATABASE_URL
-import com.example.simplemedicplan.utils.FIREBASE_DATABASE_USERS
 import com.example.simplemedicplan.utils.InputValidator
 import com.example.simplemedicplan.utils.decodeToLocalDateTimeCollection
 import com.example.simplemedicplan.utils.encodeToStringsCollection
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
@@ -54,20 +49,13 @@ class PillEditViewModel @Inject constructor(
     // Fields values
     val name = handle.getStateFlow(NAME, TextFieldValueWrapper())
     val dosage = handle.getStateFlow(DOSAGE, TextFieldValueWrapper(value = "1.0"))
-
-    //    val frequency = handle.getStateFlow(FREQUENCY, TextFieldValueWrapper())
-//    val intakeTime = handle.getStateFlow(INTAKE_TIME, TextFieldValueWrapper())
-//    val courseDuration = handle.getStateFlow(COURSE_DURATION, TextFieldValueWrapper())
     val notes = handle.getStateFlow(NOTES, TextFieldValueWrapper())
     val isReminderEnabled = handle.getStateFlow(IS_REMINDER_ENABLED, false)
-//    val reminderTime = handle.getStateFlow(REMINDER_TIME, TextFieldValueWrapper())
 
     // Dropdowns values
-//    val selectedFormType = handle.getStateFlow(FORM_TYPE, PillFormType.TABLETS)
     val selectedDosageType = handle.getStateFlow(DOSAGE_TYPE, PillDosageType.MILLIGRAMS)
 
     // Visibility values
-//    val isFormDropdownExpanded = handle.getStateFlow(IS_FORM_DROPDOWN_EXPANDED, false)
     val isDosageDropdownExpanded = handle.getStateFlow(IS_DOSAGE_DROPDOWN_EXPANDED, false)
     val isSaveChangesDialogVisible = handle.getStateFlow(IS_SAVE_CHANGES_DIALOG_VISIBLE, false)
 
@@ -84,22 +72,9 @@ class PillEditViewModel @Inject constructor(
         handle[NAME] = name.value.copy(value = input, errorId = null)
     }
 
-//    fun onFormTypeSelect(formType: PillFormType) {
-//        handle[FORM_TYPE] = formType
-//        onFormDropdownDismiss()
-//    }
-
-//    fun onFormDropdownExpandClick() {
-//        handle[IS_FORM_DROPDOWN_EXPANDED] = !isFormDropdownExpanded.value
-//    }
-
     fun onDosageDropdownExpandClick() {
         handle[IS_DOSAGE_DROPDOWN_EXPANDED] = true
     }
-
-//    fun onFormDropdownDismiss() {
-//        handle[IS_FORM_DROPDOWN_EXPANDED] = false
-//    }
 
     fun onDosageTypeSelect(dosageType: PillDosageType) {
         handle[DOSAGE_TYPE] = dosageType
@@ -114,18 +89,6 @@ class PillEditViewModel @Inject constructor(
         handle[DOSAGE] = dosage.value.copy(value = input)
     }
 
-//    fun onFrequencyChange(input: String) {
-//        handle[FREQUENCY] = frequency.value.copy(value = input)
-//    }
-//
-//    fun onIntakeTimeChange(input: String) {
-//        handle[INTAKE_TIME] = intakeTime.value.copy(value = input)
-//    }
-//
-//    fun onCourseDurationChange(input: String) {
-//        handle[COURSE_DURATION] = courseDuration.value.copy(value = input)
-//    }
-
     fun onNotesChange(input: String) {
         handle[NOTES] = notes.value.copy(value = input)
     }
@@ -133,10 +96,6 @@ class PillEditViewModel @Inject constructor(
     fun onIsReminderEnabledChange(isEnabled: Boolean) {
         handle[IS_REMINDER_ENABLED] = isEnabled
     }
-
-//    fun onReminderTimeChange(input: String) {
-//        handle[REMINDER_TIME] = reminderTime.value.copy(value = input)
-//    }
 
     fun onBackClick() {
         handle[IS_SAVE_CHANGES_DIALOG_VISIBLE] = true
@@ -166,7 +125,6 @@ class PillEditViewModel @Inject constructor(
                     dosageType = selectedDosageType.value,
                     dosage = dosage.value.value.toFloat(),
                     notes = notes.value.value,
-//                endDate = LocalDate.now().toEpochDay(),
                     remaindersDates = emptyList(),
                 )
             )

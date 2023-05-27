@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +32,6 @@ import com.example.simplemedicplan.application.theme.LightRedColor
 import com.example.simplemedicplan.application.theme.YellowColor
 import com.example.simplemedicplan.model.home.PillDescriptionUI
 import com.example.simplemedicplan.model.home.PillDosageType
-import java.util.UUID
 
 @Composable
 fun PillCard(
@@ -44,13 +41,6 @@ fun PillCard(
     onEditClick: () -> Unit = {},
     onRemoveClick: () -> Unit = {},
 ) {
-//    Card(
-//        modifier = modifier
-//            .fillMaxWidth()
-//            .wrapContentHeight()
-//            .border(width = 2.dp, color = YellowColor),
-//        onClick = onClick,
-//    ) {
     val roundedCornerShape = remember { RoundedCornerShape(8.dp) }
     Column(
         modifier = modifier
@@ -95,10 +85,6 @@ fun PillCard(
                     contentDescription = null
                 )
             }
-//                Text(
-//                    text = pillDescriptionUI.endDate,
-//                    style = MaterialTheme.typography.titleMedium
-//                )
         }
         AnimatedVisibility(visible = pillDescriptionUI.isExpanded) {
             Column(modifier = Modifier.fillMaxWidth()) {
@@ -116,7 +102,6 @@ fun PillCard(
                 )
             }
         }
-//        }
     }
 }
 
@@ -132,10 +117,8 @@ private fun PillCardPreview() {
         pillDescriptionUI = PillDescriptionUI(
             uuid = "",
             name = "Lily Noble",
-//            formType = PillFormType.CAPSULES,
             dosageType = PillDosageType.CAPSULES,
             dosage = 1f,
-//            endDate = "12 May 2023",
             notes = "For a sour aromatic sauce, add some olive oil and jasmine.",
             isExpanded = false
         )
