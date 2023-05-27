@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -71,7 +72,8 @@ fun SecondaryTextField(
     value: TextFieldValueWrapper,
     onValueChange: (String) -> Unit,
     labelText: String,
-    singleLine: Boolean = true
+    singleLine: Boolean = true,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 ) {
     val isError = value.errorId != null
     Column(modifier = modifier, horizontalAlignment = Alignment.End) {
@@ -93,6 +95,7 @@ fun SecondaryTextField(
                 isError = isError,
                 textStyle = MaterialTheme.typography.bodyMedium,
                 singleLine = singleLine,
+                keyboardOptions = keyboardOptions
             )
         }
         val errorLineModifier = Modifier.height(14.dp)
