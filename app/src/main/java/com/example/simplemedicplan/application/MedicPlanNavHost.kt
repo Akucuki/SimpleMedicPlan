@@ -1,10 +1,14 @@
 package com.example.simplemedicplan.application
 
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.simplemedicplan.feature.auth.email.login.EmailLoginScreen
 import com.example.simplemedicplan.feature.auth.email.register.EmailRegisterScreen
@@ -12,6 +16,7 @@ import com.example.simplemedicplan.feature.auth.email.registerNotice.EmailRegist
 import com.example.simplemedicplan.feature.auth.initial.AuthScreen
 import com.example.simplemedicplan.feature.home.pills.PillsScreen
 import com.example.simplemedicplan.feature.home.pills.edit.PillEditScreen
+import com.example.simplemedicplan.feature.home.profile.ProfileScreen
 
 enum class NavDirection(val route: String) {
     AUTH("auth"),
@@ -28,9 +33,13 @@ enum class NavDirection(val route: String) {
 @Composable
 fun MedicPlanNavHost(
     modifier: Modifier = Modifier,
+    activity: ComponentActivity,
     navHostController: NavHostController = rememberNavController(),
     startDestination: String = NavDirection.AUTH.route
 ) {
+    val navBackStackEntry by navHostController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     NavHost(
         modifier = modifier,
         navController = navHostController,
@@ -83,6 +92,16 @@ fun MedicPlanNavHost(
             )
         }
         composable(NavDirection.PILLS.route) {
+            val nestedNavController = rememberNavController()
+            if (currentRoute == NavDirection.PILLS.route) {
+                BackHandler(
+                    onBack = {
+                        if (!nestedNavController.navigateUp()) {
+                            activity.finish()
+                        }
+                    }
+                )
+            }
             PillsScreen(
                 onNavigateToAddPill = {
                     navHostController.navigate(NavDirection.PILLS_EDIT.route)
@@ -90,10 +109,35 @@ fun MedicPlanNavHost(
             )
         }
         composable(NavDirection.MEDIC_CARD.route) {
-//            PillsScreen(onNavigateToAddPill = {})
+            val nestedNavController = rememberNavController()
+            if (currentRoute == NavDirection.MEDIC_CARD.route) {
+                BackHandler(
+                    onBack = {
+                        if (!nestedNavController.navigateUp()) {
+                            activity.finish()
+                        }
+                    }
+                )
+            }
         }
         composable(NavDirection.PROFILE.route) {
-//            PillsScreen(onNavigateToAddPill = {})
+            val nestedNavController = rememberNavController()
+            if (currentRoute == NavDirection.PROFILE.route) {
+                BackHandler(
+                    onBack = {
+                        if (!nestedNavController.navigateUp()) {
+                            activity.finish()
+                        }
+                    }
+                )
+            }
+            ProfileScreen(
+                onNavigateToAuth = {
+                    navHostController.navigate(NavDirection.AUTH.route) {
+                        popUpTo(navHostController.graph.id) { inclusive = true }
+                    }
+                }
+            )
         }
         composable(NavDirection.PILLS_EDIT.route) {
             PillEditScreen(

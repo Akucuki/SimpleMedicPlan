@@ -38,9 +38,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             val systemUiController = rememberSystemUiController()
             val useDarkIcons = !isSystemInDarkTheme()
+            val layoutDirection = LocalLayoutDirection.current
             val navController = rememberNavController()
             var isNavigationBarVisible by remember { mutableStateOf(false) }
-            val layoutDirection = LocalLayoutDirection.current
 
             DisposableEffect(systemUiController, useDarkIcons) {
                 systemUiController.setSystemBarsColor(
@@ -65,8 +65,11 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier,
                                 onNavigate = {
                                     navController.navigate(it.route) {
-                                        popUpTo(navController.graph.startDestinationId)
                                         launchSingleTop = true
+                                        restoreState = true
+                                        popUpTo(navController.graph.startDestinationId) {
+                                            saveState = true
+                                        }
                                     }
                                 }
                             )
@@ -85,7 +88,8 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(paddingValuesExceptTop),
                         startDestination = provideStartDestination(),
-                        navHostController = navController
+                        navHostController = navController,
+                        activity = this
                     )
                 }
             }
