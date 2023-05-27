@@ -46,6 +46,8 @@
     <string name="save">Save</string>
     <string name="discard_changes">Discard changes</string>
     <string name="there_are_no_medicines">There are no medicines to show</string>
+    <string name="uknown_name">Unknown name</string>
+    <string name="sign_out">Sign out</string>
     <!-- Medicine forms -->
     <string name="tablets">tablets</string>
     <string name="capsules">capsules</string>
