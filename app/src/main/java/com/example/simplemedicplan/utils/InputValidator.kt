@@ -22,4 +22,9 @@ object InputValidator {
             else -> R.string.error_passwords_do_not_match
         }
     }
+
+    fun getMedicineNameErrorIdOrNull(name: String): Int? = when {
+        name.isEmpty() -> R.string.error_name_cannot_be_empty
+        else -> null
+    }
 }

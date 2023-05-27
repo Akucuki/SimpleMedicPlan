@@ -9,6 +9,7 @@ import com.example.simplemedicplan.model.home.PillDosageType
 import com.example.simplemedicplan.utils.FIREBASE_DATABASE_PILLS_DESCRIPTION
 import com.example.simplemedicplan.utils.FIREBASE_DATABASE_URL
 import com.example.simplemedicplan.utils.FIREBASE_DATABASE_USERS
+import com.example.simplemedicplan.utils.InputValidator
 import com.example.simplemedicplan.utils.decodeToLocalDateTimeCollection
 import com.example.simplemedicplan.utils.encodeToStringsCollection
 import com.google.firebase.auth.ktx.auth
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.time.LocalDateTime
+import java.util.UUID
 import javax.inject.Inject
 
 private const val NAME = "name"
@@ -79,7 +81,7 @@ class PillEditViewModel @Inject constructor(
         .child(FIREBASE_DATABASE_PILLS_DESCRIPTION)
 
     fun onNameChange(input: String) {
-        handle[NAME] = name.value.copy(value = input)
+        handle[NAME] = name.value.copy(value = input, errorId = null)
     }
 
 //    fun onFormTypeSelect(formType: PillFormType) {
@@ -151,10 +153,15 @@ class PillEditViewModel @Inject constructor(
     }
 
     fun onSaveClick() {
+        val nameErrorId = InputValidator.getMedicineNameErrorIdOrNull(name.value.value)
+        handle[NAME] = name.value.copy(errorId = nameErrorId)
+        if (nameErrorId != null) return
+        val uuid = UUID.randomUUID().toString()
         pillsDatabaseNodeReference
-            .child(name.value.value)
+            .child(uuid)
             .setValue(
                 PillDescription(
+                    uuid = uuid,
                     name = name.value.value,
                     dosageType = selectedDosageType.value,
                     dosage = dosage.value.value.toFloat(),

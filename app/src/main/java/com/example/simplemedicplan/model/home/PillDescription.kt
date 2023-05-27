@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.annotation.StringRes
 import com.example.simplemedicplan.R
 import kotlinx.parcelize.Parcelize
+import java.util.UUID
 
 //enum class PillFormType(@StringRes val labelId: Int) {
 //    TABLETS(labelId = R.string.tablets),
@@ -35,6 +36,7 @@ enum class PillDosageType(@StringRes val labelId: Int) {
 
 @Parcelize
 data class PillDescription(
+    val uuid: String = UUID.randomUUID().toString(),
     val name: String = "",
 //    val formType: PillFormType,
     val dosageType: PillDosageType = PillDosageType.MILLIGRAMS,
@@ -45,6 +47,7 @@ data class PillDescription(
 ) : Parcelable {
 
     fun toUI() = PillDescriptionUI(
+        uuid = uuid,
         name = name,
 //        formType = formType,
         dosageType = dosageType,
@@ -61,6 +64,7 @@ data class PillDescription(
 
 @Parcelize
 data class PillDescriptionUI(
+    val uuid: String,
     val name: String,
 //    val formType: PillFormType,
     val dosageType: PillDosageType,

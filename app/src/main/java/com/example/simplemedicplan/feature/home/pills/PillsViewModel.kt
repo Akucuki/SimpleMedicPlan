@@ -57,7 +57,7 @@ class PillsViewModel @Inject constructor(
     }
 
     fun onPillCardRemoveClick(pillDescription: PillDescriptionUI) {
-        pillsDatabaseNodeReference.child(pillDescription.name).removeValue()
+        pillsDatabaseNodeReference.child(pillDescription.uuid).removeValue()
             .addOnSuccessListener {
                 handle[PILLS_DESCRIPTIONS] = pillsDescriptions.value.filter { current ->
                     current != pillDescription

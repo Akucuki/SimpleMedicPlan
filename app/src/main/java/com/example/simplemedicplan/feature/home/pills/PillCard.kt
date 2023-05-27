@@ -34,6 +34,7 @@ import com.example.simplemedicplan.application.theme.LightRedColor
 import com.example.simplemedicplan.application.theme.YellowColor
 import com.example.simplemedicplan.model.home.PillDescriptionUI
 import com.example.simplemedicplan.model.home.PillDosageType
+import java.util.UUID
 
 @Composable
 fun PillCard(
@@ -129,6 +130,7 @@ fun PillCard(
 private fun PillCardPreview() {
     PillCard(
         pillDescriptionUI = PillDescriptionUI(
+            uuid = "",
             name = "Lily Noble",
 //            formType = PillFormType.CAPSULES,
             dosageType = PillDosageType.CAPSULES,
