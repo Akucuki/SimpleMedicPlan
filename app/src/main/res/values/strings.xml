@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">SimpleMedicPlan</string>
     <!-- Keys -->
-    <string name="facebook_app_id">1492111781597459</string>
-    <string name="fb_login_protocol_scheme">fb1492111781597459</string>
-    <string name="facebook_client_token">ff23b749b13d0c5d1a82a55392500f2f</string>
+    <string name="facebook_app_id" translatable="false">1492111781597459</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb1492111781597459</string>
+    <string name="facebook_client_token" translatable="false">ff23b749b13d0c5d1a82a55392500f2f</string>
     <!-- Notifications stuff -->
-    <string name="notification_channel_id">simple_medic_plan_channel</string>
+    <string name="notification_channel_id" translatable="false">simple_medic_plan_channel</string>
     <string name="notification_channel_name">Medicine reminders notifications</string>
     <string name="notification_channel_description">Channel providing reminder notifications for taking your medicine</string>
     <!-- Errors -->
@@ -20,9 +20,9 @@
     <string name="error_alarm_permission_is_not_granted">The reminder won\'t work as the permission for scheduling alarms is not granted</string>
     <string name="error_reminder_time_cannot_be_in_the_past">The reminder time cannot be in the past or earlier than 10 minutes after now</string>
     <!-- Strings -->
-    <string name="simple">Simple</string>
-    <string name="medic">Medic</string>
-    <string name="plan">Plan</string>
+    <string name="simple" translatable="false">Simple</string>
+    <string name="medic" translatable="false">Medic</string>
+    <string name="plan" translatable="false">Plan</string>
     <string name="register_with_email">Register with Email</string>
     <string name="authorize_with_google">Authorize with Google</string>
     <string name="authorize_with_facebook">Authorize with Facebook</string>
