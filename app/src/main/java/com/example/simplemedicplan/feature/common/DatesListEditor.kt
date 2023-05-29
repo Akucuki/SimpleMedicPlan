@@ -2,6 +2,7 @@ package com.example.simplemedicplan.feature.common
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -48,7 +49,16 @@ fun DatesListEditor(
             context,
             { _, hourOfDay, minute ->
                 val time = LocalTime.of(hourOfDay, minute)
-                onDatePicked(datePicked!!.atTime(time))
+                val timeAfter10Minutes = LocalTime.now()// TODO turn back after testing .plusMinutes(10)
+                if (time.isBefore(timeAfter10Minutes)) {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.error_reminder_time_cannot_be_in_the_past),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    onDatePicked(datePicked!!.atTime(time))
+                }
             },
             LocalDateTime.now().hour,
             LocalDateTime.now().minute,
@@ -65,7 +75,9 @@ fun DatesListEditor(
             LocalDateTime.now().year,
             LocalDateTime.now().monthValue,
             LocalDateTime.now().dayOfMonth
-        )
+        ).apply {
+            datePicker.minDate = System.currentTimeMillis() - 1000
+        }
     }
     val datesList = remember(dates) { dates.toList().sortedBy { it } }
 

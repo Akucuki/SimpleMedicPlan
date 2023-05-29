@@ -32,6 +32,10 @@ import com.example.simplemedicplan.application.theme.LightRedColor
 import com.example.simplemedicplan.application.theme.YellowColor
 import com.example.simplemedicplan.model.home.PillDescriptionUI
 import com.example.simplemedicplan.model.home.PillDosageType
+import com.example.simplemedicplan.utils.decodeToLocalDateTime
+import java.time.format.DateTimeFormatter
+
+private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM HH:mm")
 
 @Composable
 fun PillCard(
@@ -100,6 +104,22 @@ fun PillCard(
                     style = MaterialTheme.typography.bodyMedium,
                     color = YellowColor
                 )
+                if (pillDescriptionUI.remaindersDates.isNotEmpty()) {
+                    Text(
+                        modifier = Modifier.align(Alignment.Start),
+                        text = stringResource(R.string.reminders),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = YellowColor
+                    )
+                    pillDescriptionUI.remaindersDates.forEach { date ->
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = dateTimeFormatter.format(date.decodeToLocalDateTime()),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = YellowColor
+                        )
+                    }
+                }
             }
         }
     }
