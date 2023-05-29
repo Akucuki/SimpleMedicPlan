@@ -12,11 +12,12 @@ enum class HomeNavigationBarItem(
     val labelId: Int,
     val navDirection: NavDirection
 ) {
-    MEDIC_CARD(
-        iconId = R.drawable.ic_medication,
-        labelId = R.string.medic_card,
-        navDirection = NavDirection.MEDIC_CARD
-    ),
+    // TODO Uncomment this when the feature is implemented
+//    MEDIC_CARD(
+//        iconId = R.drawable.ic_medication,
+//        labelId = R.string.medic_card,
+//        navDirection = NavDirection.MEDIC_CARD
+//    ),
     PILLS(
         iconId = R.drawable.ic_medical_information,
         labelId = R.string.pills,
