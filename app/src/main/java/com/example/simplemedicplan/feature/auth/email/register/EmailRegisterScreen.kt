@@ -14,14 +14,21 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -56,6 +63,36 @@ fun EmailRegisterScreen(
     val email by viewModel.email.collectAsStateWithLifecycle()
     val password by viewModel.password.collectAsStateWithLifecycle()
     val passwordConfirm by viewModel.passwordConfirm.collectAsStateWithLifecycle()
+    var isPasswordVisible by remember { mutableStateOf(false) }
+    val passwordVisualTransformation = remember (isPasswordVisible) {
+        if (isPasswordVisible) {
+            VisualTransformation.None
+        } else {
+            PasswordVisualTransformation()
+        }
+    }
+    val passwordVisibilityIconId = remember (isPasswordVisible) {
+        if (isPasswordVisible) {
+            R.drawable.ic_visibility_off
+        } else {
+            R.drawable.ic_visibility
+        }
+    }
+    var isRepeatedPasswordVisible by remember { mutableStateOf(false) }
+    val repeatedPasswordVisualTransformation = remember (isRepeatedPasswordVisible) {
+        if (isRepeatedPasswordVisible) {
+            VisualTransformation.None
+        } else {
+            PasswordVisualTransformation()
+        }
+    }
+    val repeatedPasswordVisibilityIconId = remember (isRepeatedPasswordVisible) {
+        if (isRepeatedPasswordVisible) {
+            R.drawable.ic_visibility_off
+        } else {
+            R.drawable.ic_visibility
+        }
+    }
 
     suspend fun register(email: String, password: String) {
         // TODO handle collision
@@ -121,13 +158,31 @@ fun EmailRegisterScreen(
                 modifier = Modifier.fillMaxWidth(),
                 value = password,
                 onValueChange = viewModel::onPasswordValueChange,
-                labelText = stringResource(R.string.password)
+                labelText = stringResource(R.string.password),
+                visualTransformation = passwordVisualTransformation,
+                trailingIcon = {
+                    IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                        Icon(
+                            painter = painterResource(passwordVisibilityIconId),
+                            null
+                        )
+                    }
+                },
             )
             PrimaryTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = passwordConfirm,
                 onValueChange = viewModel::onPasswordConfirmValueChange,
-                labelText = stringResource(R.string.re_enter_password)
+                labelText = stringResource(R.string.re_enter_password),
+                visualTransformation = repeatedPasswordVisualTransformation,
+                trailingIcon = {
+                    IconButton(onClick = { isRepeatedPasswordVisible = !isRepeatedPasswordVisible }) {
+                        Icon(
+                            painter = painterResource(repeatedPasswordVisibilityIconId),
+                            null
+                        )
+                    }
+                },
             )
             Spacer(modifier = Modifier.weight(1f))
             PrimaryButton(

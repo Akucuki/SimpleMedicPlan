@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.simplemedicplan.application.theme.LightRedColor
 import com.example.simplemedicplan.application.theme.YellowColor
@@ -31,7 +32,9 @@ fun PrimaryTextField(
     modifier: Modifier = Modifier,
     value: TextFieldValueWrapper,
     onValueChange: (String) -> Unit,
-    labelText: String
+    labelText: String,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     val isError = value.errorId != null
     Column(modifier = modifier, horizontalAlignment = Alignment.End) {
@@ -43,6 +46,8 @@ fun PrimaryTextField(
             isError = isError,
             textStyle = MaterialTheme.typography.bodyMedium,
             singleLine = true,
+            visualTransformation = visualTransformation,
+            trailingIcon = trailingIcon,
             label = {
                 Text(
                     text = labelText,

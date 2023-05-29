@@ -39,6 +39,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.example.simplemedicplan.BuildConfig
 import com.example.simplemedicplan.R
+import com.example.simplemedicplan.application.theme.DarkBlueColor
 import com.example.simplemedicplan.application.theme.YellowColor
 import com.example.simplemedicplan.feature.common.PrimaryButton
 import com.facebook.CallbackManager
@@ -230,7 +231,7 @@ fun AuthScreen(
                 Divider(color = YellowColor)
                 Text(
                     modifier = Modifier
-                        .background(color = MaterialTheme.colorScheme.surface)
+                        .background(color = DarkBlueColor)
                         .padding(horizontal = 10.dp),
                     text = stringResource(R.string.or),
                     style = MaterialTheme.typography.bodySmall,
