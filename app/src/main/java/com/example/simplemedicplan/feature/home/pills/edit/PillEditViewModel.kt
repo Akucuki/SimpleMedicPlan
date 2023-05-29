@@ -9,6 +9,7 @@ import com.example.simplemedicplan.model.home.PillDosageType
 import com.example.simplemedicplan.utils.FIREBASE_DATABASE_PILLS_DESCRIPTION
 import com.example.simplemedicplan.utils.InputValidator
 import com.example.simplemedicplan.utils.decodeToLocalDateTimeCollection
+import com.example.simplemedicplan.utils.encodeToString
 import com.example.simplemedicplan.utils.encodeToStringsCollection
 import com.google.firebase.database.DatabaseReference
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +22,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 private const val EXISTING_PILL_UUID = "existing_pill_uuid"
+private const val EXISTING_PILL_DESCRIPTION = "existing_pill_description"
 
 private const val NAME = "name"
 private const val DOSAGE_TYPE = "dosage_type"
@@ -40,6 +42,9 @@ class PillEditViewModel @Inject constructor(
     val events = Channel<PillEditEvents>(Channel.UNLIMITED)
 
     private val existingPillUuid = handle.getStateFlow<String?>(EXISTING_PILL_UUID, null)
+    private val existingPillDescription = handle.getStateFlow<PillDescription?>(
+        EXISTING_PILL_DESCRIPTION, null
+    )
 
     // Fields values
     val name = handle.getStateFlow(NAME, TextFieldValueWrapper())
@@ -68,6 +73,7 @@ class PillEditViewModel @Inject constructor(
         pillsDatabaseNodeReference.child(uuid).get().addOnSuccessListener { dataSnapshot ->
             val pillDescription = dataSnapshot.getValue(PillDescription::class.java)
                 ?: return@addOnSuccessListener
+            handle[EXISTING_PILL_DESCRIPTION] = pillDescription
             handle[NAME] = name.value.copy(value = pillDescription.name)
             handle[DOSAGE_TYPE] = pillDescription.dosageType
             handle[DOSAGE] = dosage.value.copy(value = pillDescription.dosage.toString())
@@ -152,5 +158,19 @@ class PillEditViewModel @Inject constructor(
     fun onRemindDateRemoved(date: LocalDateTime) {
         val stringsSet = (reminderDates.value - date).encodeToStringsCollection().toSet()
         handle[REMINDER_DATES] = stringsSet
+        existingPillDescription.value?.let { pillDescription ->
+            events.trySend(
+                PillEditEvents.DismissReminder(
+                    date = date,
+                    pillName = pillDescription.name,
+                    notificationTag = PillDescription.getNotificationId(
+                        pillDescription.uuid,
+                        date.encodeToString()
+                    ),
+                    pillDosageType = pillDescription.dosageType,
+                    pillDosage = pillDescription.dosage,
+                )
+            )
+        }
     }
 }

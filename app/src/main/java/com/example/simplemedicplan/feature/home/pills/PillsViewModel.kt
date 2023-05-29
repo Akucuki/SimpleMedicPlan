@@ -6,9 +6,11 @@ import androidx.lifecycle.ViewModel
 import com.example.simplemedicplan.model.home.PillDescription
 import com.example.simplemedicplan.model.home.PillDescriptionUI
 import com.example.simplemedicplan.utils.FIREBASE_DATABASE_PILLS_DESCRIPTION
+import com.example.simplemedicplan.utils.decodeToLocalDateTime
 import com.google.firebase.database.DatabaseReference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 private const val IS_LOADING_IN_PROGRESS = "is_loading_in_progress"
@@ -39,6 +41,8 @@ class PillsViewModel @Inject constructor(
                     snapshot.getValue(PillDescription::class.java)!!.toUI()
                 }
                 handle[PILLS_DESCRIPTIONS] = pillsDescriptions
+                removeOldReminders()
+                registerReminders()
             }
             .addOnFailureListener {
                 Log.d("vitalik", "Failed to fetch the pills descriptions: $it")
@@ -71,9 +75,52 @@ class PillsViewModel @Inject constructor(
                 Log.d("vitalik", "Failed to remove the pill description: $it")
             }
         handle[PILLS_DESCRIPTIONS] = pillsDescriptions.value - pillDescription
+        pillDescription.remaindersDates.forEach { date ->
+            events.trySend(
+                PillsEvents.DismissReminder(
+                    date = date.decodeToLocalDateTime(),
+                    notificationTag = PillDescription.getNotificationId(pillDescription.uuid, date),
+                    pillName = pillDescription.name,
+                    pillDosage = pillDescription.dosage,
+                    pillDosageType = pillDescription.dosageType
+                )
+            )
+        }
     }
 
     override fun onAddButtonClick() {
         events.trySend(PillsEvents.NavigateToEditPill())
+    }
+
+    private fun removeOldReminders() {
+        pillsDescriptions.value.forEach { pillDescription ->
+            pillDescription.remaindersDates.forEach { date ->
+                if (date.decodeToLocalDateTime() <= LocalDateTime.now()) {
+                    removeRemoteReminderDate(pillDescription, date)
+                }
+            }
+        }
+    }
+
+    private fun registerReminders() {
+        pillsDescriptions.value.forEach {
+            it.remaindersDates.forEach { encodedDateTime ->
+                events.trySend(
+                    PillsEvents.RegisterReminder(
+                        date = encodedDateTime.decodeToLocalDateTime(),
+                        notificationTag = PillDescription.getNotificationId(it.uuid, encodedDateTime),
+                        pillDosage = it.dosage,
+                        pillName = it.name,
+                        pillDosageType = it.dosageType
+                    )
+                )
+            }
+        }
+    }
+
+    private fun removeRemoteReminderDate(pillDescription: PillDescriptionUI, encodedDate: String) {
+        pillsDatabaseNodeReference.child(pillDescription.uuid).setValue(
+            pillDescription.copy(remaindersDates = pillDescription.remaindersDates - encodedDate)
+        )
     }
 }

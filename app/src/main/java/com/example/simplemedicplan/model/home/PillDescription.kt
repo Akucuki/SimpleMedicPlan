@@ -1,5 +1,6 @@
 package com.example.simplemedicplan.model.home
 
+import android.content.Context
 import android.os.Parcelable
 import androidx.annotation.StringRes
 import com.example.simplemedicplan.R
@@ -57,9 +58,20 @@ data class PillDescription(
         remaindersDates = remaindersDates,
     )
 
-//    companion object {
-//        val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
-//    }
+    companion object {
+        fun getNotificationId(pillUuid: String, encodedDate: String) = "$pillUuid-$encodedDate"
+
+        fun composeNotificationText(
+            context: Context,
+            pillName: String,
+            pillDosage: Float,
+            pillDosageType: PillDosageType
+        ): String {
+            val pillDosageTypeName = context.getString(pillDosageType.labelId)
+            return context.getString(R.string.notification_text, pillName, pillDosage, pillDosageTypeName)
+        }
+
+    }
 }
 
 @Parcelize

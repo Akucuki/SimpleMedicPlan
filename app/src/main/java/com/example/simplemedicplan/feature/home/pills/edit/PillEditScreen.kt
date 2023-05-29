@@ -1,5 +1,13 @@
 package com.example.simplemedicplan.feature.home.pills.edit
 
+import android.Manifest
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,36 +32,49 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.example.simplemedicplan.R
+import com.example.simplemedicplan.application.theme.LightRedColor
 import com.example.simplemedicplan.application.theme.YellowColor
 import com.example.simplemedicplan.feature.common.DatesListEditor
 import com.example.simplemedicplan.feature.common.DropdownTriggerButton
+import com.example.simplemedicplan.feature.common.PrimaryButton
 import com.example.simplemedicplan.feature.common.PrimaryCheckbox
 import com.example.simplemedicplan.feature.common.PrimaryDropdownMenu
 import com.example.simplemedicplan.feature.common.PrimaryDropdownMenuItem
 import com.example.simplemedicplan.feature.common.SMpAppBar
 import com.example.simplemedicplan.feature.common.SaveChangesDialog
 import com.example.simplemedicplan.feature.common.SecondaryTextField
+import com.example.simplemedicplan.model.home.PillDescription
 import com.example.simplemedicplan.model.home.PillDosageType
 import com.example.simplemedicplan.utils.APP_BAR_HEIGHT
+import com.example.simplemedicplan.utils.alarm.AlarmBroadcastReceiver
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.flow.receiveAsFlow
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PillEditScreen(
     viewModel: PillEditViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
     pillUuid: String?
 ) {
+    val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val events = remember(viewModel.events, lifecycleOwner) {
         viewModel.events.receiveAsFlow().flowWithLifecycle(
@@ -72,12 +93,34 @@ fun PillEditScreen(
 
     val reminderDates by viewModel.reminderDates.collectAsStateWithLifecycle()
 
+    val postNotificationsPermissionState = if (Build.VERSION.SDK_INT >= 33) {
+        rememberPermissionState(
+            Manifest.permission.POST_NOTIFICATIONS
+        )
+    } else {
+        null
+    }
+
     BackHandler(onBack = viewModel::onBackClick)
 
     LaunchedEffect(Unit) {
         events.collect { event ->
             when (event) {
                 is PillEditEvents.NavigateBack -> onNavigateBack()
+                is PillEditEvents.DismissReminder -> {
+                    dismissReminder(
+                        context,
+                        event.date,
+                        event.notificationTag,
+                        event.pillName,
+                        PillDescription.composeNotificationText(
+                            context,
+                            event.pillName,
+                            event.pillDosage,
+                            event.pillDosageType
+                        )
+                    )
+                }
             }
         }
     }
@@ -118,9 +161,11 @@ fun PillEditScreen(
                     style = MaterialTheme.typography.bodyMedium,
                     color = YellowColor
                 )
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(.5f)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(.5f)
+                ) {
                     DropdownTriggerButton(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = viewModel::onDosageDropdownExpandClick
@@ -193,11 +238,27 @@ fun PillEditScreen(
                         .align(Alignment.End),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    DatesListEditor(
-                        dates = reminderDates,
-                        onDatePicked = viewModel::onRemindDatePicked,
-                        onDateRemoveClick = viewModel::onRemindDateRemoved
-                    )
+                    if (postNotificationsPermissionState?.status?.isGranted != false) {
+                        DatesListEditor(
+                            dates = reminderDates,
+                            onDatePicked = viewModel::onRemindDatePicked,
+                            onDateRemoveClick = viewModel::onRemindDateRemoved
+                        )
+                    } else {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                text = stringResource(R.string.error_alarm_permission_is_not_granted),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = LightRedColor
+                            )
+                            PrimaryButton(
+                                text = stringResource(R.string.grant_permission),
+                                onClick = {
+                                    postNotificationsPermissionState.launchPermissionRequest()
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -208,5 +269,33 @@ fun PillEditScreen(
                 onDiscardChangesClick = viewModel::onSaveChangesDialogDiscardClick
             )
         }
+    }
+}
+
+private fun dismissReminder(
+    context: Context,
+    dateTime: LocalDateTime,
+    notificationTag: String,
+    notificationName: String,
+    notificationText: String
+) {
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    val intent = Intent(context, AlarmBroadcastReceiver::class.java).apply {
+        putExtra(AlarmBroadcastReceiver.NOTIFICATION_TAG, notificationTag)
+        putExtra(AlarmBroadcastReceiver.NOTIFICATION_NAME, notificationName)
+        putExtra(AlarmBroadcastReceiver.NOTIFICATION_TEXT, notificationText)
+    }
+    val pendingIntent = PendingIntent.getBroadcast(
+        context,
+        dateTime.toEpochSecond(ZoneOffset.UTC).toInt(),
+        intent,
+        PendingIntent.FLAG_IMMUTABLE
+    )
+    if (
+        ContextCompat.checkSelfPermission(context, Manifest.permission.SCHEDULE_EXACT_ALARM)
+        == PackageManager.PERMISSION_GRANTED
+    ) {
+        Log.d("vitalik", "Dismissing an alarm with tag $notificationTag")
+        alarmManager.cancel(pendingIntent)
     }
 }
